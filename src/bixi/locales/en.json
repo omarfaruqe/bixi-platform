@@ -1,0 +1,79 @@
+{
+  "app": {
+    "title": "BIXI Demand Forecasting and Rebalancing",
+    "question": "How many departures and arrivals should we expect at each station, and where should bicycles be redistributed?",
+    "language": "Language",
+    "station_names_note": "Station names are shown in their original form.",
+    "locale_check": "Formatting preview"
+  },
+  "nav": {
+    "overview": "Overview",
+    "trip_analysis": "Trip analysis",
+    "station_map": "Station map",
+    "forecasts": "Demand forecasts",
+    "rebalancing": "Rebalancing simulation",
+    "model_performance": "Model performance",
+    "methodology": "Data and methodology"
+  },
+  "pages": {
+    "planned_step": "Planned for step {step} of the build.",
+    "overview": {
+      "description": "Headline numbers, forecast status, and key findings for the selected stations."
+    },
+    "trip_analysis": {
+      "description": "Hourly, daily, and seasonal patterns of departures and arrivals."
+    },
+    "station_map": {
+      "description": "Interactive map of stations with trip volume, net flow, and forecast overlays."
+    },
+    "forecasts": {
+      "description": "Departure and arrival forecasts for the next 24 hours, with prediction intervals."
+    },
+    "rebalancing": {
+      "description": "Scenario analysis of redistribution plans under explicit assumptions about starting bike inventory and station capacity."
+    },
+    "model_performance": {
+      "description": "Baselines versus machine-learning models, time-based backtests, and error analysis."
+    },
+    "methodology": {
+      "description": "Data sources, station selection, modelling choices, assumptions, and limitations."
+    }
+  },
+  "methodology": {
+    "assumptions_title": "Assumptions and limitations",
+    "assumption_1": "Observed trips are not the same as true demand: when a station is empty or full, unmet demand is never recorded.",
+    "assumption_2": "Periods outside the operating season are excluded from modelling.",
+    "assumption_3": "Rebalancing results depend on assumed starting inventory and station capacity; they are scenario estimates, not measured outcomes.",
+    "assumption_4": "24-hour forecasts use only information available at prediction time (weather forecasts, not observed weather)."
+  },
+  "filters": {
+    "station": "Station",
+    "all_stations": "All stations",
+    "date_range": "Date range",
+    "hour_of_day": "Hour of day",
+    "day_type": "Day type",
+    "weekday": "Weekday",
+    "weekend": "Weekend",
+    "holiday": "Holiday"
+  },
+  "charts": {
+    "departures": "Departures",
+    "arrivals": "Arrivals",
+    "net_flow": "Net flow (arrivals − departures)",
+    "hour_of_day": "Hour of day",
+    "trips": "Trips",
+    "forecast": "Forecast",
+    "observed": "Observed",
+    "interval_80": "80% prediction interval"
+  },
+  "errors": {
+    "data_not_found": "Data file not found: {path}. Run the ingestion pipeline first.",
+    "generic": "Something went wrong. Please try again.",
+    "api_unavailable": "The forecast service is unavailable."
+  },
+  "common": {
+    "caveat": "Important caveat",
+    "loading": "Loading…",
+    "no_data": "No data available for the current selection."
+  }
+}

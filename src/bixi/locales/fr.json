@@ -1,0 +1,79 @@
+{
+  "app": {
+    "title": "Prévision de la demande et rééquilibrage BIXI",
+    "question": "Combien de départs et d’arrivées faut-il prévoir à chaque station, et où faut-il redistribuer les vélos?",
+    "language": "Langue",
+    "station_names_note": "Les noms de stations sont affichés dans leur forme originale.",
+    "locale_check": "Aperçu du formatage"
+  },
+  "nav": {
+    "overview": "Vue d’ensemble",
+    "trip_analysis": "Analyse des déplacements",
+    "station_map": "Carte des stations",
+    "forecasts": "Prévisions de la demande",
+    "rebalancing": "Simulation de rééquilibrage",
+    "model_performance": "Performance des modèles",
+    "methodology": "Données et méthodologie"
+  },
+  "pages": {
+    "planned_step": "Prévu à l’étape {step} de la construction.",
+    "overview": {
+      "description": "Chiffres clés, état des prévisions et principales conclusions pour les stations sélectionnées."
+    },
+    "trip_analysis": {
+      "description": "Tendances horaires, quotidiennes et saisonnières des départs et des arrivées."
+    },
+    "station_map": {
+      "description": "Carte interactive des stations avec volume de déplacements, flux net et prévisions."
+    },
+    "forecasts": {
+      "description": "Prévisions des départs et des arrivées pour les prochaines 24 heures, avec intervalles de prédiction."
+    },
+    "rebalancing": {
+      "description": "Analyse de scénarios de redistribution selon des hypothèses explicites sur l’inventaire initial de vélos et la capacité des stations."
+    },
+    "model_performance": {
+      "description": "Modèles de référence comparés aux modèles d’apprentissage automatique, validation temporelle et analyse des erreurs."
+    },
+    "methodology": {
+      "description": "Sources de données, choix des stations, décisions de modélisation, hypothèses et limites."
+    }
+  },
+  "methodology": {
+    "assumptions_title": "Hypothèses et limites",
+    "assumption_1": "Les déplacements observés ne correspondent pas à la demande réelle : lorsqu’une station est vide ou pleine, la demande non satisfaite n’est jamais enregistrée.",
+    "assumption_2": "Les périodes hors de la saison d’exploitation sont exclues de la modélisation.",
+    "assumption_3": "Les résultats du rééquilibrage dépendent d’hypothèses sur l’inventaire initial et la capacité des stations; ce sont des estimations de scénarios, et non des résultats mesurés.",
+    "assumption_4": "Les prévisions à 24 heures n’utilisent que l’information disponible au moment de la prédiction (prévisions météo, et non météo observée)."
+  },
+  "filters": {
+    "station": "Station",
+    "all_stations": "Toutes les stations",
+    "date_range": "Période",
+    "hour_of_day": "Heure de la journée",
+    "day_type": "Type de jour",
+    "weekday": "Jour de semaine",
+    "weekend": "Fin de semaine",
+    "holiday": "Jour férié"
+  },
+  "charts": {
+    "departures": "Départs",
+    "arrivals": "Arrivées",
+    "net_flow": "Flux net (arrivées − départs)",
+    "hour_of_day": "Heure de la journée",
+    "trips": "Déplacements",
+    "forecast": "Prévision",
+    "observed": "Observé",
+    "interval_80": "Intervalle de prédiction à 80 %"
+  },
+  "errors": {
+    "data_not_found": "Fichier de données introuvable : {path}. Exécutez d’abord le pipeline d’ingestion.",
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "api_unavailable": "Le service de prévisions est indisponible."
+  },
+  "common": {
+    "caveat": "Mise en garde importante",
+    "loading": "Chargement…",
+    "no_data": "Aucune donnée disponible pour la sélection actuelle."
+  }
+}
