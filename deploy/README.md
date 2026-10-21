@@ -40,6 +40,22 @@ If the repository is private, clone with a GitHub personal access token or deplo
 scp data/processed/hourly_station.parquet USER@103.99.176.180:~/bixi-platform/data/processed/
 ```
 
+Since Step 6, also copy the four tables the Model performance page reads (create the folder on
+the server first with `mkdir -p ~/bixi-platform/data/processed/model_results`):
+
+```bash
+scp data/processed/model_results/{metrics_overall,errors_by_hour,errors_by_station,importance}.parquet USER@103.99.176.180:~/bixi-platform/data/processed/model_results/
+```
+
+The container runs as an unprivileged user, so the copied files must be world-readable. On the
+server, after every copy:
+
+```bash
+chmod -R a+rX ~/bixi-platform/data/processed
+```
+
+Without it the page fails with `PermissionError: Permission denied (os error 13)`.
+
 ## 3. Build and start (on the server)
 
 ```bash
