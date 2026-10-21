@@ -9,6 +9,7 @@ from bixi.app.state import get_translator, init_language, render_language_select
 from bixi.app.views import (
     make_placeholder,
     render_methodology,
+    render_model_performance,
     render_overview,
     render_station_map,
     render_trip_analysis,
@@ -22,6 +23,7 @@ _CUSTOM_RENDERERS = {
     "overview": render_overview,
     "trip_analysis": render_trip_analysis,
     "station_map": render_station_map,
+    "model_performance": render_model_performance,
     "methodology": render_methodology,
 }
 

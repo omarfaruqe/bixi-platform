@@ -159,3 +159,49 @@ Consequence for Step 6: the production model trains on 2024 data with full forec
 evaluated on 2025. 2023 is still used for the baselines and the observed-weather (oracle)
 comparison, and a variant trained on 2023-2025 with temperature-only weather for 2023 is
 compared against it.
+
+## 12. Forecasting models (Step 6)
+`python -m bixi.models` runs the backtests, the holdout and the final training; results are in
+`docs/model_results.md` (generated) and `data/processed/model_results/` (read by the dashboard).
+Experiment tracking is this versioned report plus its tables; MLflow was dropped as unnecessary
+at this scale.
+
+**Protocol (fixed before results).** Four monthly backtest folds in 2025 (June-September) and one
+holdout, 2025-10-01 to 2025-11-15, evaluated once. Each model trains on 2024 data plus 2025 data up
+to 14 days before the cutoff and early-stops on those 14 days. Baselines use the same windows.
+
+**Results, holdout (backtest in brackets), mean absolute error in trips per station-hour:**
+
+| | Departures | Arrivals |
+|---|---|---|
+| Same hour last week | 2.88 (3.30) | 2.86 (3.28) |
+| 4-week same-hour average (best baseline) | 2.62 (2.88) | 2.59 (2.87) |
+| **LightGBM, Poisson (main)** | **1.92 (2.47)** | **1.90 (2.45)** |
+| Skill vs same hour last week | 33.5% (25.0%) | 33.6% (25.3%) |
+| Skill vs best baseline | 26.8% (14.0%) | 26.9% (14.5%) |
+
+- **Objective.** Poisson beat Tweedie and squared error on MAE and Poisson deviance in both
+  periods, as expected for counts.
+- **Weather.** Day-ahead forecasts reduce MAE by 7-8% on the holdout (about 6% in the backtests)
+  versus no weather, and by about a third in rainy hours (1.84 vs 2.80 departures). Observed
+  weather (not deployable) would gain only a further 0-3%, so day-ahead forecasts capture most of
+  the value of weather.
+- **2023 data.** Adding 2023 (temperature-only forecasts) lowers MAE by about 1% in both periods.
+  The main model keeps 2024+ for now, because every training row then has complete weather; this
+  is a candidate change once more seasons are available.
+- **Holidays.** On holidays the model's MAE is 1.94 versus 3.95 for the same-hour-last-week
+  baseline.
+- **What it relies on.** Recent demand dominates (the 4-week same-hour mean alone is 58-72% of
+  the gain), then station, hour, network activity and weather.
+
+**Prediction intervals (80%).** LightGBM quantile models (10th and 90th percentiles) gave 75%
+coverage. Split conformal calibration on the 14 days before the cutoff widens them slightly; the
+holdout coverage is then 79.8% (departures) and 79.7% (arrivals). A plain Poisson interval around
+the mean forecast reaches 81-82% overall but only by over-covering quiet hours (94%) while
+covering 62% of the busiest ones (15+ trips per hour), where rebalancing decisions are made.
+Limitation: coverage of the calibrated intervals still varies with volume (about 89% in quiet
+hours, 75% in the busiest); calibrating separately by volume band is the next refinement.
+
+**Final models** (`data/models/`, not committed): mean, 10th and 90th percentile models per
+target, trained on 2024-2025 through 2025-11-14, with the conformal margins in `manifest.json`.
+Step 7 serves them.

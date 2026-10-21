@@ -47,3 +47,14 @@ def network_stations() -> pl.DataFrame | None:
     """Every live station, used only as map context; optional."""
     path = get_settings().reference_dir / "network_stations.csv"
     return _read_csv(str(path), path.stat().st_mtime) if path.exists() else None
+
+
+@st.cache_data(max_entries=8, show_spinner=False)
+def _read_parquet(path: str, mtime: float) -> pl.DataFrame:
+    return pl.read_parquet(path)
+
+
+def model_table(name: str) -> pl.DataFrame | None:
+    """A Step 6 result table (data/processed/model_results/<name>.parquet), or None if absent."""
+    path = get_settings().processed_dir / "model_results" / f"{name}.parquet"
+    return _read_parquet(str(path), path.stat().st_mtime) if path.exists() else None
