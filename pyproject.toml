@@ -8,8 +8,10 @@ version = "0.1.0"
 description = "Montréal BIXI demand forecasting and rebalancing platform (bilingual EN/FR)"
 readme = "README.md"
 requires-python = ">=3.11"
+
 dependencies = [
     "babel>=2.14",
+    "certifi>=2024.2.2",
 ]
 
 [project.optional-dependencies]
