@@ -79,3 +79,23 @@ with backtests, station map, bilingual UI, live demo.
   likely recovered by staff).
 - **Station id**: attached through `data/processed/station_crosswalk.csv`; trips at names that
   do not link to a live station keep `station_id = null` and are outside the study set.
+
+## 9. Ingestion outputs (Step 3)
+`python -m bixi.ingest` (or `make ingest`) applies section 8 with Polars and writes:
+- `data/processed/trips_clean/<year>.parquet`: every trip with station ids and
+  `is_departure` / `is_arrival` flags (98.1-98.8% of trips are kept as departures).
+- `data/processed/hourly_station.parquet`: 50 stations x 15,411 season hours = 770,550 rows,
+  with departures and arrivals. Hours with no trips are stored as zeros (16% of station-hours);
+  dropping them would teach a model that quiet hours never happen.
+- `data/processed/hourly_system.parquet`: network-wide departures per hour.
+- `data/processed/ingest_report.txt`: the validation summary.
+
+Checks against the independent DuckDB profile: season counts are 91-95% (median) of each
+station's full-year events, the remainder being winter service and the dropped false starts.
+The few lower ratios belong to winter-service stations (e.g. Messier / St-Joseph). Peak hour is
+17:00 local; each daylight-saving fall-back day has 25 hours, kept apart because the grid is UTC.
+
+Observed extremes are kept, not clipped: Métro St-Laurent (24 docks) recorded 229 arrivals in one
+hour on a festival evening, when BIXI runs staffed overflow docking. Such hours are an argument
+for event features in Step 5, and another reminder that observed trips are not station capacity.
+

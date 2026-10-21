@@ -1,7 +1,7 @@
-.PHONY: install test lint format app clean
+.PHONY: install test lint format app clean stations ingest data
 
 install:
-	pip install -e ".[app,dev]"
+	pip install -e ".[app,data,dev]"
 
 test:
 	pytest -q
@@ -12,6 +12,14 @@ lint:
 format:
 	ruff format src tests
 	ruff check --fix src tests
+
+stations:
+	python scripts/select_stations.py
+
+ingest:
+	python -m bixi.ingest
+
+data: stations ingest
 
 app:
 	streamlit run src/bixi/app/main.py
