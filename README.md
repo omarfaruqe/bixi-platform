@@ -16,7 +16,7 @@ bicycles be redistributed?**
 **Live demo:** <http://103.99.176.180/bixi/> (French: <http://103.99.176.180/bixi/?lang=fr>),
 a Streamlit dashboard served with Docker behind Caddy.
 
-> **Status:** Steps 1-7 of 10 complete. Step 8 (rebalancing simulation) is in progress.
+> **Status:** Steps 1-8 of 10 complete. Step 9 (completing the bilingual dashboard) is next.
 
 ## Findings so far
 - **Forecasts beat the baselines.** On a six-week holdout (October 1 - November 14, 2025, never
@@ -28,6 +28,10 @@ a Streamlit dashboard served with Docker behind Caddy.
   only 0-3% more.
 - **Honest intervals.** 80% prediction intervals (quantile models + conformal calibration) contain
   the actual count 80% of the time.
+- **Forecast-based rebalancing pays off.** Over 45 days, truck routes optimized with OR-Tools from
+  the day-ahead forecasts cut station-hours with no bike or no free dock by **20%** (2 trucks, half-full
+  starts), against 13% for a rule of thumb, while driving 15% less; that is two thirds of what
+  perfect foresight would achieve.
 - **Commuting drives imbalance.** On weekday mornings the Plateau loses bikes and downtown
   fills: Square-Victoria gains about 125 bikes between 7 and 10 am, 3.4 times its 37 docks.
 
@@ -55,7 +59,7 @@ actual stockouts or unmet demand, so rebalancing results are scenario estimates.
 | 5 | Weather and hourly modelling tables | Done |
 | 6 | Baselines and forecasting model evaluation | Done |
 | 7 | Store and serve forecasts through FastAPI | Done |
-| 8 | Redistribution simulation | In progress |
+| 8 | Redistribution simulation | Done |
 | 9 | Complete bilingual dashboard | |
 | 10 | Documentation, tests, deployment | Deployed early; final polish pending |
 

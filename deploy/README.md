@@ -139,6 +139,19 @@ handle_path /bixi-api/* {
 }
 ```
 
+## 7. Rebalancing results (Step 8)
+
+The Rebalancing simulation page reads precomputed results (no OR-Tools on the server). On the
+Mac, after `python -m bixi.rebalancing`:
+
+```bash
+chmod 644 data/processed/rebalancing/*
+ssh USER@103.99.176.180 'mkdir -p ~/bixi-platform/data/processed/rebalancing'
+scp data/processed/rebalancing/{summary,stops,inventory}.parquet data/processed/rebalancing/assumptions.json USER@103.99.176.180:~/bixi-platform/data/processed/rebalancing/
+```
+
+Then on the server: `chmod -R a+rX ~/bixi-platform/data/processed` (no rebuild needed).
+
 ## Update after new commits
 
 ```bash

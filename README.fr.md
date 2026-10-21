@@ -16,8 +16,8 @@ chaque station, et où faut-il redistribuer les vélos?**
 **Démo en ligne :** <http://103.99.176.180/bixi/?lang=fr> (anglais : <http://103.99.176.180/bixi/>),
 un tableau de bord Streamlit servi avec Docker derrière Caddy.
 
-> **État d’avancement :** étapes 1 à 7 sur 10 terminées. L’étape 8 (simulation de
-> rééquilibrage) est en cours.
+> **État d’avancement :** étapes 1 à 8 sur 10 terminées. L’étape 9 (tableau de bord bilingue
+> complet) est la prochaine.
 
 ## Principaux résultats
 - **Les prévisions battent les références.** Sur une période de validation de six semaines
@@ -30,6 +30,11 @@ un tableau de bord Streamlit servi avec Docker derrière Caddy.
   connaître la météo réelle n’ajouterait que 0 à 3 %.
 - **Des intervalles fiables.** Les intervalles de prédiction à 80 % (modèles de quantiles et
   calibration conforme) contiennent la valeur réelle 80 % du temps.
+- **Le rééquilibrage fondé sur les prévisions est rentable.** Sur 45 jours, des tournées de camions
+  optimisées avec OR-Tools à partir des prévisions de la veille réduisent de **20 %** les
+  station-heures sans vélo ou sans point d’ancrage libre (2 camions, stations à moitié pleines au
+  départ), contre 13 % pour une règle empirique, avec 15 % moins de kilomètres; c’est deux tiers de
+  ce qu’une connaissance parfaite de la journée permettrait.
 - **Le navettage crée le déséquilibre.** En semaine, le matin, le Plateau perd des vélos et le
   centre-ville se remplit : Square-Victoria gagne environ 125 vélos entre 7 h et 10 h, soit
   3,4 fois ses 37 points d’ancrage.
@@ -62,7 +67,7 @@ non satisfaite; les résultats du rééquilibrage sont donc des estimations de s
 | 5 | Météo et tables horaires de modélisation | Terminée |
 | 6 | Modèles de référence et évaluation des prévisions | Terminée |
 | 7 | Stockage et diffusion des prévisions avec FastAPI | Terminée |
-| 8 | Simulation de redistribution | En cours |
+| 8 | Simulation de redistribution | Terminée |
 | 9 | Tableau de bord bilingue complet | |
 | 10 | Documentation, tests, déploiement | Déployé tôt; finition à venir |
 

@@ -231,3 +231,46 @@ inside their training period, so a run can never show in-sample predictions as f
 **Flow.** Run files are built on the Mac (`export-holdout` or `export-model`), copied to the server
 (about 2 MB) and loaded inside the API container with `python -m bixi.forecast publish`. The server
 needs neither LightGBM nor the large backtest outputs.
+
+## 14. Rebalancing simulation (Step 8)
+`python -m bixi.rebalancing` runs the scenario analysis; results are in
+`docs/rebalancing_results.md` (generated) and `data/processed/rebalancing/` (read by the
+dashboard). The dashboard only reads precomputed results, so the server image needs no OR-Tools.
+
+**Design.** Plans are made from the day-ahead **forecasts** and every day is scored with the flows
+that **actually** happened, so a strategy only scores well if the forecasts were good enough to act
+on. Each station's bike count is simulated hour by hour within its docks; a *problem hour* is a
+station-hour in which some departures find no bike (empty) or some arrivals find no free dock
+(full). Trucks work two windows, 5-7 h (preparing the morning peak) and 13-15 h (preparing the
+evening peak). For each window the target inventory keeps the station's forecast path inside its
+docks until the next window (the midpoint when the swing exceeds the station).
+
+**Strategies.** No rebalancing; a dispatcher's rule of thumb (largest deficit served from the
+nearest surplus); OR-Tools routing (bikes split into 5-bike chunks, truck load between 0 and 20,
+route within the window, a penalty per unserved bike, then driving time); and the same optimizer
+with perfect knowledge of the day, as an upper bound.
+
+**Results, 45 days, stations half full at midnight, 2 trucks (per day):**
+
+| Strategy | Problem hours | Reduction | Bikes moved | Truck km |
+|---|---|---|---|---|
+| No rebalancing | 161 | | 0 | 0 |
+| Rule of thumb, from forecasts | 140 | 13% | 81 | 65 |
+| **Optimized, from forecasts** | **130** | **20%** | 141 | 55 |
+| Optimized, perfect foresight | 113 | 30% | 148 | 54 |
+
+- The optimizer moves 74% more bikes than the rule of thumb with 15% fewer kilometres.
+- Planning from forecasts achieves about two thirds (66%) of the improvement perfect foresight
+  would give.
+- Sensitivity (optimized, from forecasts): 1 truck 10-12%, 2 trucks 15-20%, 4 trucks 19-26%
+  fewer problem hours, depending on the starting fill (30/50/70%). Half-full starts benefit most.
+- Many full hours remain under every strategy: downtown stations such as Square-Victoria receive
+  several times their dock count in the morning peak, which trucks alone cannot absorb. In
+  practice BIXI runs staffed overflow docking there; the simulation deliberately leaves it out.
+
+**Limitations.** Starting inventory, dock counts, speeds and handling times are assumptions; the
+sensitivity grid shows how results move with the two that matter most. Hourly netting of
+departures and arrivals understates problems at busy stations, and observed trips are censored
+(empty or full stations already suppressed some trips), so problem hours are a lower bound.
+Moves take effect at the end of each window and pickups are not checked against the simulated
+stock at pick-up time.

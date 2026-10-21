@@ -58,3 +58,16 @@ def model_table(name: str) -> pl.DataFrame | None:
     """A Step 6 result table (data/processed/model_results/<name>.parquet), or None if absent."""
     path = get_settings().processed_dir / "model_results" / f"{name}.parquet"
     return _read_parquet(str(path), path.stat().st_mtime) if path.exists() else None
+
+
+def rebalancing_table(name: str) -> pl.DataFrame | None:
+    """A Step 8 result table (data/processed/rebalancing/<name>.parquet), or None if absent."""
+    path = get_settings().processed_dir / "rebalancing" / f"{name}.parquet"
+    return _read_parquet(str(path), path.stat().st_mtime) if path.exists() else None
+
+
+def rebalancing_assumptions() -> dict | None:
+    import json
+
+    path = get_settings().processed_dir / "rebalancing" / "assumptions.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None

@@ -1,7 +1,7 @@
-.PHONY: install test lint format app api clean stations ingest features data
+.PHONY: install test lint format app api clean stations ingest features data rebalance
 
 install:
-	pip install -e ".[app,data,ml,api,dev]"
+	pip install -e ".[app,data,ml,api,opt,dev]"
 
 test:
 	pytest -q
@@ -23,6 +23,9 @@ features:
 	python -m bixi.features
 
 data: stations ingest features
+
+rebalance:
+	python -m bixi.rebalancing
 
 app:
 	streamlit run src/bixi/app/main.py

@@ -12,6 +12,7 @@ from bixi.app.views import (
     render_methodology,
     render_model_performance,
     render_overview,
+    render_rebalancing,
     render_station_map,
     render_trip_analysis,
 )
@@ -25,6 +26,7 @@ _CUSTOM_RENDERERS = {
     "trip_analysis": render_trip_analysis,
     "station_map": render_station_map,
     "forecasts": render_forecasts,
+    "rebalancing": render_rebalancing,
     "model_performance": render_model_performance,
     "methodology": render_methodology,
 }

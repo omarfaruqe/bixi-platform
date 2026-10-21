@@ -188,3 +188,101 @@ def test_forecasts_page_reports_an_unavailable_api(monkeypatch):
     app.run()
     assert not app.exception
     assert "indisponible" in app.error[0].value
+
+
+def test_rebalancing_page_renders(tmp_path, monkeypatch):
+    import json
+    from datetime import date
+
+    from bixi.rebalancing.summary import summarize
+
+    out = tmp_path / "data" / "processed" / "rebalancing"
+    out.mkdir(parents=True)
+    rows = []
+    for fill in (0.3, 0.5, 0.7):
+        for trucks in (1, 2, 4):
+            for strategy, hours in (
+                ("none", 100),
+                ("rule_forecast", 90),
+                ("optimized_forecast", 80),
+                ("optimized_oracle", 75),
+            ):
+                rows.append(
+                    {
+                        "date": date(2025, 10, 15),
+                        "start_fill": fill,
+                        "trucks": trucks,
+                        "strategy": strategy,
+                        "empty_hours": hours // 2,
+                        "full_hours": hours - hours // 2,
+                        "problem_hours": hours,
+                        "missing_bikes": 1.0,
+                        "missing_docks": 1.0,
+                        "bikes_moved": 0 if strategy == "none" else 50,
+                        "truck_km": 0.0 if strategy == "none" else 40.0,
+                        "unmet_target_bikes": 0,
+                    }
+                )
+    summarize(pl.DataFrame(rows)).write_parquet(out / "summary.parquet")
+    pl.DataFrame(
+        {
+            "date": [date(2025, 10, 15)] * 2,
+            "strategy": ["optimized_forecast"] * 2,
+            "window_start": [5, 5],
+            "truck": [0, 0],
+            "seq": [0, 1],
+            "station_id": ["1", "2"],
+            "bikes": [6, -6],
+        }
+    ).write_parquet(out / "stops.parquet")
+    pl.DataFrame(
+        [
+            {
+                "date": date(2025, 10, 15),
+                "strategy": s,
+                "station_id": sid,
+                "position": h,
+                "local_hour": h,
+                "inventory": 5.0,
+            }
+            for s in ("none", "optimized_forecast")
+            for sid in ("1", "2")
+            for h in range(25)
+        ]
+    ).write_parquet(out / "inventory.parquet")
+    (out / "assumptions.json").write_text(
+        json.dumps(
+            {
+                "start_fill": 0.5,
+                "trucks": 2,
+                "truck_capacity": 20,
+                "speed_kmh": 18.0,
+                "stop_minutes": 4.0,
+                "minutes_per_bike": 0.5,
+                "windows": [[5, 7], [13, 15]],
+                "days": 1,
+            }
+        ),
+        encoding="utf-8",
+    )
+    reference = tmp_path / "reference"
+    reference.mkdir()
+    (reference / "selected_stations.csv").write_text(STATIONS_CSV, encoding="utf-8")
+    monkeypatch.setenv("BIXI_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("BIXI_REFERENCE_DIR", str(reference))
+    for language in ("en", "fr"):
+        app = AppTest.from_function(
+            _page, args=("render_rebalancing", language), default_timeout=30
+        )
+        app.run()
+        assert not app.exception, app.exception
+        assert len(app.metric) == 4
+        assert app.metric[0].value.startswith("20")  # 100 -> 80 problem hours
+
+
+def test_rebalancing_page_without_results_shows_hint(tmp_path, monkeypatch):
+    monkeypatch.setenv("BIXI_DATA_DIR", str(tmp_path / "data"))
+    app = AppTest.from_function(_page, args=("render_rebalancing", "en"), default_timeout=30)
+    app.run()
+    assert not app.exception
+    assert "python -m bixi.rebalancing" in app.info[0].value
