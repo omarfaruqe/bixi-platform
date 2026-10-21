@@ -62,23 +62,29 @@ docker logs --tail 50 bixi-app
 Add this block inside the server's site block in the Caddyfile, beside the other apps' routes:
 
 ```
-handle /bixi* {
+redir /bixi /bixi/ permanent
+
+handle /bixi/* {
     reverse_proxy 127.0.0.1:8501
 }
 ```
+
+Back up the Caddyfile first. If it is bind-mounted as a single file, overwrite it in place
+(`cat > Caddyfile`); editors that save a new file break the mount and Caddy keeps the old one.
 
 Use `handle`, not `handle_path`: Streamlit expects to see the `/bixi` prefix. Caddy proxies
 Streamlit's websocket automatically. Validate and reload (a graceful reload; other routes keep
 serving):
 
 ```bash
-docker exec gateway-caddy-1 caddy validate --config /etc/caddy/Caddyfile
-docker exec gateway-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+docker exec gateway-caddy-1 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+docker exec gateway-caddy-1 caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile
 ```
 
 Then open `http://103.99.176.180/bixi/` (French: `http://103.99.176.180/bixi/?lang=fr`).
-If the gateway container is not on the host network, `127.0.0.1` inside it is not the server;
-see the gateway's existing routes for the address it uses to reach the other apps.
+This works because the gateway container uses the host network (`network: host`), so
+`127.0.0.1` inside it is the server. Deployed this way on 2026-10-21 next to MapleMetrics and
+HansardLens.
 
 ## Update after new commits
 
