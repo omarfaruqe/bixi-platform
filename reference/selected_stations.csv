@@ -1,0 +1,51 @@
+station_id,name,borough,lat,lon,capacity,volume_tier,station_type,events_2023,events_2024,events_2025,historical_names
+218,du Mont-Royal / Clark,Le Plateau-Mont-Royal,45.519410,-73.586850,39,high,street,143439,202619,228290,du Mont-Royal / Clark
+103,Métro Papineau (Dorion / De Maisonneuve),Ville-Marie,45.523845,-73.552366,32,high,transit,112492,130613,110894,Métro Papineau (Cartier / Ste-Catherine) | Métro Papineau (Dorion / De Maisonneuve)
+641,Smith / Peel,Le Sud-Ouest,45.492761,-73.556411,27,high,street,98892,112022,141375,Bassin Peel (Smith / de la Commune) | Smith / Peel
+927,Métro Atwater (Atwater / Ste-Catherine),Ville-Marie,45.489588,-73.584661,43,high,transit,127242,126632,95111,Métro Atwater (Atwater / Ste-Catherine ) | Métro Atwater (Atwater / Ste-Catherine)
+834,Métro St-Laurent (de Maisonneuve / St-Laurent),Ville-Marie,45.510748,-73.565121,24,high,transit,95927,113120,121207,Métro St-Laurent ( de Maisonneuve / St-Laurent) | Métro St-Laurent (de Maisonneuve / St-Laurent) | Métro St-Laurent 2 ( de Maisonneuve / St-Laurent)
+67,University / Milton,Le Plateau-Mont-Royal,45.506533,-73.576601,39,high,campus,125217,108701,86802,Milton / University | University / Milton
+169,Boyer / du Mont-Royal,Le Plateau-Mont-Royal,45.527493,-73.579995,23,high,street,126360,102953,89800,Boyer / du Mont-Royal
+35,de la Commune / St-Sulpice,Ville-Marie,45.504242,-73.553469,47,high,street,102087,101196,104985,de la Commune / St-Sulpice
+173,Berri / Cherrier,Le Plateau-Mont-Royal,45.519266,-73.569297,39,high,street,84505,85601,84972,Berri / Cherrier
+141,Émile-Duployé / Rachel,Le Plateau-Mont-Royal,45.529668,-73.569846,40,high,street,55634,84292,102611,Marquette / Rachel | Rachel / Émile-Duployé | s Émile-Duployé / Rachel | Émile-Duployé / Rachel
+107,Square-Victoria (Viger),Ville-Marie,45.502085,-73.562941,37,high,park_plaza,72929,80227,85398,Square Victoria (Viger / du Square-Victoria) | Square-Victoria (Viger / du Square-Victoria) | Square-Victoria (Viger/du Square-Victoria)
+109,Métro Frontenac (Ontario / du Havre),Ville-Marie,45.533706,-73.552179,23,high,transit,60416,71226,82236,Métro Frontenac (Ontario / du Havre)
+839,Square Viger (Berri / Viger),Ville-Marie,45.512168,-73.554816,29,high,park_plaza,57901,72173,70512,Square Viger (Berri / Viger) | Square Viger (Berri)
+286,Bernard / Jeanne-Mance,Le Plateau-Mont-Royal,45.524296,-73.604912,23,high,street,80169,67077,52517,Bernard / Jeanne-Mance
+150,Messier / du Mont-Royal,Le Plateau-Mont-Royal,45.537114,-73.571003,35,high,street,61881,63829,71309,Messier / du Mont-Royal
+163,Marquette / Laurier,Le Plateau-Mont-Royal,45.535437,-73.582219,31,high,street,70201,54440,60368,Marquette / Laurier
+168,Marmier / St-Denis,Rosemont - La Petite-Patrie,45.530805,-73.598396,27,high,street,53788,62624,66304,Marmier / St-Denis
+9,Crescent / de Maisonneuve,Ville-Marie,45.498120,-73.577596,23,high,street,64602,66031,51985,Bishop / de Maisonneuve S/E | Crescent / de Maisonneuve | Crescent / de Maisonneuve N/E
+966,Jeanne-Mance / Sherbrooke,Le Plateau-Mont-Royal,45.509300,-73.571077,25,medium,street,67081,51156,59767,Jeanne-Mance / Sherbrooke
+524,Métro Beaudry (Beaudry / Ste-Catherine),Ville-Marie,45.518885,-73.555938,23,medium,transit,54766,57065,59126,Métro Beaudry (Beaudry / Ste-Catherine)
+918,Chabot / Laurier,Le Plateau-Mont-Royal,45.536958,-73.579609,23,medium,street,54018,53116,60216,Chabot / Laurier | Laurier / Chabot | Laurier / de Bordeaux
+541,Fullum / Marie-Anne,Le Plateau-Mont-Royal,45.536597,-73.568158,27,medium,street,45350,53737,67591,Fullum / Marie-Anne
+108,Alexandre-DeSève / Ontario,Ville-Marie,45.524389,-73.560633,35,medium,street,50077,59029,53846,Alexandre-DeSève  / Ontario | Alexandre-DeSève / Ontario
+55,Place du Canada (Peel / des Canadiens-de-Montréal),Ville-Marie,45.497796,-73.568251,23,medium,park_plaza,49787,53321,59322,Place du Canada (Peel / des Canadiens-de-Montréal)
+309,de l'Hôtel-de-Ville / Rachel,Le Plateau-Mont-Royal,45.519897,-73.580106,14,medium,street,56506,56929,45912,de l'Hotel-de-Ville / Rachel | de l'Hôtel-de-Ville / Rachel
+221,Villeneuve / du Parc,Le Plateau-Mont-Royal,45.518198,-73.592392,23,medium,park_plaza,43702,44840,64186,Villeneuve / du Parc
+145,du Parc-La Fontaine / Duluth,Le Plateau-Mont-Royal,45.524518,-73.571977,31,medium,park_plaza,43078,48794,54786,du Parc-La Fontaine / Duluth
+279,de Bellechasse / de St-Vallier,Rosemont - La Petite-Patrie,45.533410,-73.601124,19,medium,street,40173,50179,42965,de Bellechasse / de St-Vallier
+579,St-Urbain / de la Gauchetière,Ville-Marie,45.507078,-73.561395,43,medium,street,40440,43000,47988,St-Urbain / de la Gauchetière
+239,Bloomfield / Bernard,Outremont,45.520303,-73.607709,27,medium,street,49098,49507,31986,Bloomfield / Bernard
+900,Fulllum / de Rouen,Ville-Marie,45.532131,-73.558767,27,medium,street,39275,41526,37432,Fullum / de Rouen | Fullum / de Rouen_SWAP ECO 5
+537,Métro Laurier (Berri / St-Joseph),Le Plateau-Mont-Royal,45.527231,-73.586726,21,medium,transit,37122,40142,40734,Métro Laurier (Berri / St-Joseph)
+23,St-Dominique / St-Viateur,Le Plateau-Mont-Royal,45.526500,-73.598128,31,medium,street,36470,36114,43187,St-Dominique / St-Viateur
+980,Wellington / Queen,Ville-Marie,45.497704,-73.555344,21,medium,street,32145,35329,47023,Queen / Wellington | Wellington / Queen
+571,Place Jean-Paul-Riopelle (St-Antoine),Ville-Marie,45.503069,-73.560652,23,low,park_plaza,35568,39259,39146,St-Antoine / Jean-Paul Riopelle | St-Antoine/Jean-Paul Riopelle
+563,des Vraquiers / Ottawa,Le Sud-Ouest,45.489727,-73.564063,14,low,street,36980,35501,37634,Ottawa / William | des Vraquiers / Ottawa
+178,St-André / Rachel,Le Plateau-Mont-Royal,45.524096,-73.575372,15,low,street,35479,33856,39598,St-André / Rachel
+931,Métro / REM Édouard-Montpetit (Vincent-d'Indy),Outremont,45.509885,-73.611488,23,low,transit,32349,34186,36541,Métro / REM Édouard-Montpetit (Vincent-d'Indy) | Métro Édouard-Montpetit (Vincent-d'Indy / du Mont-Royal) | Métro Édouard-Montpetit (du Mont-Royal / Vincent-d'Indy) | Métro Édouard-Montpetit (du Mont-Royal / Vincent-d'Indy)_SWAP ECO 5 | Métro/ REM Édouard-Montpetit (Vincent-d'Indy)
+112,La Fontaine / Alexandre-DeSève,Ville-Marie,45.523304,-73.558000,19,low,street,26808,30726,42341,La Fontaine / Alexandre-DeSève | La Fontaine / Alexandre-de-Sève | la Fontaine / Alexandre-de-Sève
+135,Bercy / Rachel,Le Plateau-Mont-Royal,45.538403,-73.561964,19,low,street,28029,27281,32628,Bercy / Rachel
+969,Marquette / des Carrières,Rosemont - La Petite-Patrie,45.538723,-73.588706,27,low,street,26553,30114,29334,Marquette / des Carrières | des Carrières /  Marquette | des Carrières / Marquette
+752,Messier / St-Joseph,Le Plateau-Mont-Royal,45.539461,-73.576056,17,low,street,28905,29549,26053,Messier / St-Joseph
+540,Maguire / Henri-Julien,Le Plateau-Mont-Royal,45.527041,-73.593471,35,low,street,25922,27968,30425,Maguire / Henri-Julien
+285,Hutchison / Van Horne,Le Plateau-Mont-Royal,45.524962,-73.610546,23,low,street,24502,27667,26334,Hutchison / Van Horne
+525,St-Hubert / René-Levesque,Ville-Marie,45.514482,-73.556873,19,low,street,17805,27217,29189,St-Hubert / René-Levesque
+99,Frontenac / Ste-Catherine,Ville-Marie,45.530063,-73.545592,19,low,street,15956,23878,28034,Frontenac / Ste-Catherine
+649,University / des Pins,Ville-Marie,45.508097,-73.579938,27,low,campus,21001,22132,20093,University / Des Pins | University / des Pins
+126,Atwater / Sherbrooke,Ville-Marie,45.491226,-73.587630,31,low,street,18266,18249,19717,Atwater / Sherbrooke
+562,Parc de Dieppe (Pierre-Dupuy),Ville-Marie,45.501863,-73.543961,35,low,park_plaza,17173,19583,19389,Parc de Dieppe | Parc de Dieppe (Pierre-Dupuy)
+64,Quai de la navette fluviale,Ville-Marie,45.513666,-73.538425,19,low,park_plaza,13772,10563,13630,Quai de la navette fluviale

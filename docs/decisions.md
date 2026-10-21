@@ -26,10 +26,27 @@ stockouts. This caveat is shown in the application.
 - Leakage rule: 24-hour forecasts use only information available at prediction time. Weather
   inputs are forecasts (or lagged observations), never observed future weather.
 
-## 4. Station selection (Step 2)
-Choose 50 stations after checking continuity across 2023-2025. Selection criteria and the
-resulting mix (volume, borough, station type) will be documented here, and the sample should not
-be only the busiest stations.
+## 4. Station identity and selection (Step 2)
+The trip files have no station id. Names drift between years (case, accents, spacing, and real
+renames), so 1,724 historical names describe far fewer physical stations. A station is
+identified by **location**: each historical name is linked to the nearest station in the live
+GBFS feed within 50 m, which gives a stable `station_id` and a dock `capacity`
+(`src/bixi/stations/identity.py`). Linked names carry 78-85% of trip events; the rest are mostly
+off-island, retired, or relocated stations. 213 live stations have more than one historical name.
+
+The 50 study stations (`reference/selected_stations.csv`, produced by
+`scripts/select_stations.py`) must meet all of:
+- on the island of Montréal, inside one 3 km service zone (downtown, Old Montréal, the Plateau,
+  the universities). One zone keeps the Step 8 truck routing realistic;
+- at least 2,000 starts + ends in each of 2023, 2024 and 2025;
+- no year below 50% of the station's busiest year (screens out relocations, unlinked renames
+  and long construction, e.g. Ste-Catherine / du Fort and Métro Berri-UQAM).
+
+From the 194 eligible stations, the selection takes a third from each volume tercile (low,
+medium, high) and spreads picks out geographically (greedy max-min distance). Result: 33 street,
+8 park or plaza, 7 transit, 2 campus stations; 14-47 docks each. The selection is deterministic.
+
+Limitation: the sample is urban-core only, so results do not describe outer boroughs.
 
 ## 5. Rebalancing simulation (Step 8)
 Starting inventory and capacity are assumptions, not observations. The simulation is a scenario
@@ -47,3 +64,18 @@ when code references a key that does not exist.
 ## 7. Minimum impressive version
 If time runs short, ship Steps 1-6 plus a basic dashboard: validated data, baselines vs LightGBM
 with backtests, station map, bilingual UI, live demo.
+
+## 8. Cleaning rules (from the Step 2 profile)
+- **Time**: `STARTTIMEMS` / `ENDTIMEMS` are UTC epoch milliseconds. Aggregate on UTC hours and
+  derive local (`America/Toronto`) calendar features, so the DST fall-back hour is not merged.
+- **Season**: model April 15 - November 15. December-March is a small winter network (about
+  2-3% of trips) with different behaviour; it is excluded and documented, not imputed.
+- **Coordinates**: 0.0 and -1.0 are missing-value sentinels and become null.
+- **Departures**: every trip with a start station counts as a departure at its start hour.
+- **Arrivals**: a trip counts as an arrival only if it has an end time and an end station
+  (0.3-0.6% of trips have no end).
+- **False starts**: same-station trips under 60 s are re-docks, not demand; dropped from both.
+- **Long trips**: trips over 24 h keep their departure but not their arrival (the bike was
+  likely recovered by staff).
+- **Station id**: attached through `data/processed/station_crosswalk.csv`; trips at names that
+  do not link to a live station keep `station_id = null` and are outside the study set.
