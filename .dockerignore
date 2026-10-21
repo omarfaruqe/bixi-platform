@@ -1,0 +1,14 @@
+# Keep the build context small: raw data is 8 GB and never goes into the image.
+data/
+.venv/
+.git/
+.github/
+.agents/
+.claude/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.DS_Store
+tests/
+docs/

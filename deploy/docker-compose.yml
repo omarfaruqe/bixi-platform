@@ -1,0 +1,27 @@
+# Production deployment, isolated from anything else on the server:
+#   - its own compose project name ("bixi"), so compose commands never touch other stacks
+#   - its own container name and image tag
+#   - one published port, chosen with BIXI_PORT (default 8501)
+#
+# From the project root on the server:
+#   BIXI_PORT=8501 docker compose -p bixi -f deploy/docker-compose.yml up -d --build
+name: bixi
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: bixi-platform:latest
+    container_name: bixi-app
+    restart: unless-stopped
+    ports:
+      - "${BIXI_PORT:-8501}:8501"
+    volumes:
+      - ../data/processed:/data/processed:ro
+    mem_limit: 1g
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
