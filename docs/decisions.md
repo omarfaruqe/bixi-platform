@@ -152,6 +152,10 @@ station-hours within 1 km of an active festival venue have about twice the eveni
 because those stations are busy anyway). Tests check lag offsets, the 24-hour minimum, the winter
 gap, per-station isolation, and that production features contain no observed weather or targets.
 
-Open-Meteo archives day-ahead forecasts from January 2024 for most models (GFS temperature from
-2021), so 2023 coverage depends on the model; `features_report.txt` records coverage per year
-and forecast error against observed weather.
+Day-ahead forecast coverage (Open-Meteo `best_match`): 2024 and 2025 have every variable; 2023
+has temperature only (most archives start in January 2024). Forecast quality against observed
+weather: temperature mean absolute error 1.3-1.6 C, rain/no-rain agreement about 90% (2024-2025).
+Consequence for Step 6: the production model trains on 2024 data with full forecast weather and is
+evaluated on 2025. 2023 is still used for the baselines and the observed-weather (oracle)
+comparison, and a variant trained on 2023-2025 with temperature-only weather for 2023 is
+compared against it.

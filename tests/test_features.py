@@ -123,6 +123,32 @@ def test_weather_parsing_and_rain_flag(tmp_path):
     assert fc["fc_is_rainy"].to_list() == [0, 1]
 
 
+def test_forecast_years_with_missing_variables_stack(tmp_path):
+    """2023 archives only have temperature: other variables arrive as all-null columns."""
+    partial = _weather_file(
+        tmp_path,
+        "previous_runs_2023.json",
+        {
+            "time": ["2023-06-01T00:00"],
+            "temperature_2m_previous_day1": [18.0],
+            "precipitation_previous_day1": [None],
+        },
+    )
+    complete = _weather_file(
+        tmp_path,
+        "previous_runs_2024.json",
+        {
+            "time": ["2024-06-01T00:00"],
+            "temperature_2m_previous_day1": [20.0],
+            "precipitation_previous_day1": [0.4],
+        },
+    )
+    fc = forecast_weather(partial + complete)
+    assert fc["fc_temperature_2m"].to_list() == [18.0, 20.0]
+    assert fc["fc_precipitation"].to_list() == [None, 0.4]
+    assert fc["fc_is_rainy"].to_list() == [None, 1]
+
+
 def test_weather_file_must_be_utc(tmp_path):
     path = tmp_path / "x.json"
     path.write_text(json.dumps({"utc_offset_seconds": -14400, "hourly": {"time": []}}))
@@ -193,7 +219,7 @@ def test_build_features_end_to_end(tmp_path):
 
 def test_forecast_download_parameters_and_coverage():
     params = forecast_params(2024, "gfs_seamless")
-    assert params["start_date"] == "2024-04-15" and params["end_date"] == "2024-11-14"
+    assert params["start_date"] == "2024-04-15" and params["end_date"] == "2024-11-15"
     assert "precipitation_previous_day1" in params["hourly"].split(",")
     assert params["timezone"] == "UTC" and params["models"] == "gfs_seamless"
     coverage = forecast_coverage(

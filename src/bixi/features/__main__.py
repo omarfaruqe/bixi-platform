@@ -91,17 +91,27 @@ def main() -> int:
         )
         lines += ["", "--- Day-ahead forecast vs observed weather ---"]
         for r in quality.iter_rows(named=True):
+            mae = "n/a" if r["temp_mae_c"] is None else f"{r['temp_mae_c']:.2f} C"
+            rain = (
+                "n/a (no precipitation forecast)"
+                if r["rain_flag_agreement"] is None
+                else f"{r['rain_flag_agreement']:.1%}"
+            )
             lines.append(
-                f"{r['year']}: {r['hours']:,} hours with forecasts; temperature MAE "
-                f"{r['temp_mae_c']:.2f} C; rain/no-rain agreement {r['rain_flag_agreement']:.1%}"
+                f"{r['year']}: {r['hours']:,} hours with forecasts; temperature MAE {mae}; "
+                f"rain/no-rain agreement {rain}"
             )
         coverage = (
-            both.group_by("year").agg(pl.col("fc_temperature_2m").is_not_null().mean()).sort("year")
+            both.group_by("year")
+            .agg(
+                pl.col("fc_temperature_2m").is_not_null().mean().alias("temperature"),
+                pl.col("fc_precipitation").is_not_null().mean().alias("precipitation"),
+            )
+            .sort("year")
         )
-        lines.append(
-            "forecast coverage by year: "
-            + ", ".join(f"{y} {c:.0%}" for y, c in coverage.iter_rows())
-        )
+        lines.append("forecast coverage by year (temperature / precipitation):")
+        for year, temp, rain in coverage.iter_rows():
+            lines.append(f"  {year}: {temp:.0%} / {rain:.0%}")
 
     events = df.filter(pl.col("event_any") == 1)
     lines += [

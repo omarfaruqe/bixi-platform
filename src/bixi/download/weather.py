@@ -104,7 +104,7 @@ FORECAST_VARIABLES = (
 )
 DEFAULT_FORECAST_MODEL = "best_match"
 SEASON_START = (4, 15)  # same window as the modelled season (bixi.ingest.rules)
-SEASON_END = (11, 14)  # inclusive last date
+SEASON_END = (11, 15)  # inclusive, in UTC: covers the last local evening of the season
 
 
 def forecast_params(year: int, model: str) -> dict[str, str]:

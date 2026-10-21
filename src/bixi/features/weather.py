@@ -53,7 +53,10 @@ def _derive(df: pl.DataFrame, prefix: str) -> pl.DataFrame:
 
 def observed_weather(paths: list[Path]) -> pl.DataFrame:
     """ERA5 archive files -> ts_utc + obs_<variable> columns."""
-    frames = [_read_hourly(p).select("ts_utc", *VARIABLES) for p in sorted(paths)]
+    frames = [
+        _read_hourly(p).select("ts_utc", *[pl.col(v).cast(pl.Float64) for v in VARIABLES])
+        for p in sorted(paths)
+    ]
     df = pl.concat(frames).unique("ts_utc", keep="last").sort("ts_utc")
     return _derive(df.rename({v: f"obs_{v}" for v in VARIABLES}), "obs_")
 
@@ -66,7 +69,9 @@ def forecast_weather(paths: list[Path]) -> pl.DataFrame:
         columns = [
             f"{v}{FORECAST_SUFFIX}" for v in VARIABLES if f"{v}{FORECAST_SUFFIX}" in df.columns
         ]
-        frames.append(df.select("ts_utc", *columns))
+        # A variable the archive has no data for comes back all-null (dtype Null); cast so a
+        # partial year (2023: temperature only) stacks with complete years.
+        frames.append(df.select("ts_utc", *[pl.col(c).cast(pl.Float64) for c in columns]))
     df = pl.concat(frames, how="diagonal").unique("ts_utc", keep="last").sort("ts_utc")
     renamed = df.rename(
         {c: "fc_" + c.removesuffix(FORECAST_SUFFIX) for c in df.columns if c != "ts_utc"}
