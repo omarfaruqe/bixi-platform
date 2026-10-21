@@ -24,8 +24,9 @@ ENV BIXI_DATA_DIR=/data \
     BIXI_REFERENCE_DIR=/app/reference
 
 EXPOSE 8501
+# STREAMLIT_SERVER_BASE_URL_PATH serves the app under a path prefix (e.g. "bixi" -> /bixi/).
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"
+    CMD python -c "import os, urllib.request; base = os.environ.get('STREAMLIT_SERVER_BASE_URL_PATH', '').strip('/'); urllib.request.urlopen('http://localhost:8501/' + (base + '/' if base else '') + '_stcore/health')"
 
 CMD ["streamlit", "run", "src/bixi/app/main.py", \
      "--server.address=0.0.0.0", "--server.port=8501", "--server.headless=true"]

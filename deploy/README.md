@@ -2,7 +2,12 @@
 
 The app runs as one container, `bixi-app`, in its own compose project, `bixi`. Every command
 below names that project (`-p bixi`) or that container, so nothing else on the server is
-touched. It is served over plain HTTP at `http://<server-ip>:<port>`.
+touched.
+
+By default the container listens on `127.0.0.1:8501` only and serves the app under `/bixi/`, so
+the server's existing reverse proxy (Caddy) can publish it at `http://<server-ip>/bixi/`, next
+to the other apps. To expose the port directly instead, start it with
+`BIXI_BIND=0.0.0.0 BIXI_BASE_PATH=` and open the port in the firewall.
 
 What goes where:
 - **Image**: the code, `reference/` (station lists) and `.streamlit/` (theme). Built on the server.
@@ -39,36 +44,48 @@ scp data/processed/hourly_station.parquet USER@103.99.176.180:~/bixi-platform/da
 
 ```bash
 cd ~/bixi-platform
-BIXI_PORT=8501 docker compose -p bixi -f deploy/docker-compose.yml up -d --build
+docker compose -p bixi -f deploy/docker-compose.yml up -d --build
 ```
 
 ## 4. Check it
 
 ```bash
 docker ps --filter name=bixi-app
-curl -s http://localhost:8501/_stcore/health; echo
+curl -s http://localhost:8501/bixi/_stcore/health; echo
 docker logs --tail 50 bixi-app
 ```
 
-`ok` from the health check means the app is up. Then open `http://103.99.176.180:8501`
-(French: `http://103.99.176.180:8501/?lang=fr`).
+`ok` means the app is up (reachable from the server only, until step 5).
 
-## 5. Open the port if the browser cannot connect
+## 5. Publish it through the existing Caddy gateway
 
-```bash
-sudo ufw status
-sudo ufw allow 8501/tcp
+Add this block inside the server's site block in the Caddyfile, beside the other apps' routes:
+
+```
+handle /bixi* {
+    reverse_proxy 127.0.0.1:8501
+}
 ```
 
-Only needed when `ufw` is active. A hosting-provider firewall (security group) may also need
-the port opened in its web console.
+Use `handle`, not `handle_path`: Streamlit expects to see the `/bixi` prefix. Caddy proxies
+Streamlit's websocket automatically. Validate and reload (a graceful reload; other routes keep
+serving):
+
+```bash
+docker exec gateway-caddy-1 caddy validate --config /etc/caddy/Caddyfile
+docker exec gateway-caddy-1 caddy reload --config /etc/caddy/Caddyfile
+```
+
+Then open `http://103.99.176.180/bixi/` (French: `http://103.99.176.180/bixi/?lang=fr`).
+If the gateway container is not on the host network, `127.0.0.1` inside it is not the server;
+see the gateway's existing routes for the address it uses to reach the other apps.
 
 ## Update after new commits
 
 ```bash
 cd ~/bixi-platform
 git pull
-BIXI_PORT=8501 docker compose -p bixi -f deploy/docker-compose.yml up -d --build
+docker compose -p bixi -f deploy/docker-compose.yml up -d --build
 ```
 
 After re-running the ingestion on the Mac, copy the new `hourly_station.parquet` again (step 2);

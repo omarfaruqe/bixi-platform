@@ -1,10 +1,11 @@
 # Production deployment, isolated from anything else on the server:
 #   - its own compose project name ("bixi"), so compose commands never touch other stacks
 #   - its own container name and image tag
-#   - one published port, chosen with BIXI_PORT (default 8501)
+#   - published on 127.0.0.1 only by default: the server's reverse proxy (Caddy) serves it
+#     at /bixi/. Set BIXI_BIND=0.0.0.0 and BIXI_BASE_PATH= (empty) to expose the port directly.
 #
 # From the project root on the server:
-#   BIXI_PORT=8501 docker compose -p bixi -f deploy/docker-compose.yml up -d --build
+#   docker compose -p bixi -f deploy/docker-compose.yml up -d --build
 name: bixi
 
 services:
@@ -16,7 +17,9 @@ services:
     container_name: bixi-app
     restart: unless-stopped
     ports:
-      - "${BIXI_PORT:-8501}:8501"
+      - "${BIXI_BIND:-127.0.0.1}:${BIXI_PORT:-8501}:8501"
+    environment:
+      STREAMLIT_SERVER_BASE_URL_PATH: "${BIXI_BASE_PATH-bixi}"
     volumes:
       - ../data/processed:/data/processed:ro
     mem_limit: 1g
