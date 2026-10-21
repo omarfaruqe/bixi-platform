@@ -27,7 +27,7 @@
       "description": "Carte interactive des stations avec volume de déplacements, flux net et prévisions."
     },
     "forecasts": {
-      "description": "Prévisions des départs et des arrivées pour les prochaines 24 heures, avec intervalles de prédiction."
+      "description": "Prévisions horaires des départs et des arrivées émises la veille, avec intervalles de prédiction à 80 %, comparées à ce qui s’est réellement produit."
     },
     "rebalancing": {
       "description": "Analyse de scénarios de redistribution selon des hypothèses explicites sur l’inventaire initial de vélos et la capacité des stations."
@@ -181,5 +181,26 @@
     "col_skill": "Mieux que la semaine précédente",
     "col_mean_actual": "Déplacements moyens par heure",
     "col_relative": "Erreur par rapport au volume"
+  },
+  "forecasts": {
+    "holdout_note": "Il s’agit de véritables prévisions émises la veille par un modèle entraîné uniquement sur les données jusqu’au {trained}, pour la période du {start} au {end}, les dernières semaines de la saison 2025, que le modèle n’avait jamais vues. BIXI publie les données de déplacements après coup : le même pipeline produira des prévisions pour 2026 dès leur publication.",
+    "date": "Date",
+    "kpi_forecast": "Prévision pour la journée",
+    "kpi_actual": "Réel pour la journée",
+    "kpi_error": "Erreur sur le total quotidien",
+    "kpi_error_help": "Total quotidien prévu moins total réel, en proportion du total réel.",
+    "kpi_inside": "Heures dans l’intervalle",
+    "kpi_inside_help": "Heures dont la valeur réelle est comprise dans l’intervalle de prédiction à 80 %. Environ 80 % sont attendues sur plusieurs jours.",
+    "chart_title": "Heure par heure : {station}",
+    "chart_caption": "Ligne bleue : prévision. Bande ombrée : intervalle de prédiction à 80 %. Points noirs : valeurs observées.",
+    "alt_chart": "Graphique linéaire de la prévision horaire avec son intervalle à 80 % et les valeurs observées",
+    "band": "Intervalle à 80 %",
+    "per_hour_axis": "Déplacements par heure",
+    "stations_title": "Quelles stations vont se remplir ou se vider?",
+    "stations_caption": "Variation nette prévue (arrivées moins départs) pour le moment de la journée choisi, pour les 50 stations, de la plus forte perte prévue au plus fort gain. C’est l’entrée de la simulation de rééquilibrage.",
+    "col_forecast_net": "Variation nette prévue",
+    "col_actual_net": "Variation nette réelle",
+    "col_forecast_dep": "Départs prévus",
+    "col_forecast_arr": "Arrivées prévues"
   }
 }

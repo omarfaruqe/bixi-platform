@@ -128,3 +128,67 @@ def importance_figure(groups: pl.DataFrame, tr: Translator) -> go.Figure:
     fig.update_xaxes(tickformat=".0%", showgrid=True)
     fig.update_yaxes(title=None, zeroline=False)
     return fig
+
+
+def forecast_day_figure(points: list[dict], tr: Translator) -> go.Figure:
+    """One station's forecast for one day: 80% band, forecast line and observed counts.
+
+    Points are in time order; the x axis is the position in the day, labelled with local hours,
+    so the repeated hour on the autumn DST change still plots as two separate hours.
+    """
+    x = list(range(len(points)))
+    hours = [p["local_hour"] for p in points]
+    yhat = [p["yhat"] for p in points]
+    lo = [p["lo"] if p["lo"] is not None else p["yhat"] for p in points]
+    hi = [p["hi"] if p["hi"] is not None else p["yhat"] for p in points]
+    actual = [p["actual"] for p in points]
+    band = tr.t("forecasts.band")
+    fig = go.Figure()
+    fig.add_scatter(x=x, y=hi, mode="lines", line={"width": 0}, hoverinfo="skip", showlegend=False)
+    fig.add_scatter(
+        x=x,
+        y=lo,
+        mode="lines",
+        line={"width": 0},
+        fill="tonexty",
+        fillcolor="rgba(42, 120, 214, 0.18)",
+        name=band,
+        hoverinfo="skip",
+    )
+    fig.add_scatter(
+        x=x,
+        y=yhat,
+        mode="lines",
+        name=tr.t("charts.forecast"),
+        line={"color": BLUE, "width": LINE_WIDTH},
+        customdata=[
+            [tr.hour(h), tr.number(v, 1), tr.number(a, 1), tr.number(b, 1)]
+            for h, v, a, b in zip(hours, yhat, lo, hi, strict=True)
+        ],
+        hovertemplate=(
+            f"%{{customdata[0]}}<br>{tr.t('charts.forecast')}: %{{customdata[1]}}"
+            f"<br>{band}: %{{customdata[2]}} – %{{customdata[3]}}<extra></extra>"
+        ),
+    )
+    if any(a is not None for a in actual):
+        fig.add_scatter(
+            x=x,
+            y=actual,
+            mode="markers",
+            name=tr.t("charts.observed"),
+            marker={"color": "#0b0b0b", "size": 8, "line": {"color": "white", "width": 2}},
+            customdata=[
+                [tr.hour(h), tr.number(a or 0, 0)] for h, a in zip(hours, actual, strict=True)
+            ],
+            hovertemplate=(
+                f"%{{customdata[0]}}<br>{tr.t('charts.observed')}: %{{customdata[1]}}"
+                "<extra></extra>"
+            ),
+        )
+    fig = _layout(fig, tr, tr.t("forecasts.per_hour_axis"), tr.t("charts.hour_of_day"))
+    ticks = [i for i, h in enumerate(hours) if h % 3 == 0 and (i == 0 or hours[i - 1] != h)]
+    fig.update_xaxes(
+        tickvals=ticks, ticktext=[tr.hour(hours[i]) for i in ticks], range=[-0.5, len(x) - 0.5]
+    )
+    fig.update_layout(hovermode="x unified")
+    return fig

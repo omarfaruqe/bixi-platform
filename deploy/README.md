@@ -102,6 +102,43 @@ This works because the gateway container uses the host network (`network: host`)
 `127.0.0.1` inside it is the server. Deployed this way on 2026-10-21 next to MapleMetrics and
 HansardLens.
 
+## 6. Forecast database and API (Step 7)
+
+`up -d --build` also starts `bixi-db` (PostgreSQL, no published port, data in the `bixi_pgdata`
+volume) and `bixi-api` (FastAPI on `127.0.0.1:8502`). To use a non-default database password,
+create `deploy/.env` with `BIXI_DB_PASSWORD=<something long>` *before* the first start.
+
+Publish the forecasts. On the Mac, from the project folder:
+
+```bash
+python -m bixi.forecast export-holdout
+chmod 644 data/processed/forecasts/*
+ssh USER@103.99.176.180 'mkdir -p ~/bixi-platform/data/processed/forecasts'
+scp data/processed/forecasts/holdout-2025.* USER@103.99.176.180:~/bixi-platform/data/processed/forecasts/
+```
+
+On the server:
+
+```bash
+cd ~/bixi-platform
+docker compose -p bixi -f deploy/docker-compose.yml exec api \
+  python -m bixi.forecast publish /data/processed/forecasts/holdout-2025.parquet
+curl -s http://localhost:8502/health; echo
+```
+
+The health check should name the active run (`holdout-2025`). The API's interactive
+documentation is at `http://localhost:8502/docs` on the server. To publish it at
+`http://<server-ip>/bixi-api/docs`, set `BIXI_API_ROOT_PATH=/bixi-api` in `deploy/.env`, restart,
+and add to the Caddyfile (here the prefix *is* stripped, because the API serves from `/`):
+
+```
+redir /bixi-api /bixi-api/ permanent
+
+handle_path /bixi-api/* {
+    reverse_proxy 127.0.0.1:8502
+}
+```
+
 ## Update after new commits
 
 ```bash
@@ -114,6 +151,8 @@ After re-running the ingestion on the Mac, copy the new `hourly_station.parquet`
 the app picks it up on the next page load, no rebuild needed.
 
 ## Stop or remove (only this app)
+
+`down` keeps the database volume; add `-v` only if you also want to delete the forecasts.
 
 ```bash
 docker compose -p bixi -f deploy/docker-compose.yml down

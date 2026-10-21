@@ -10,7 +10,7 @@ WORKDIR /app
 # Dependencies first so code changes do not reinstall them.
 COPY pyproject.toml README.md ./
 COPY src ./src
-RUN pip install ".[app,data]"
+RUN pip install ".[app,data,api]"
 
 # Small reference files (station list, network) and the Streamlit theme are part of the image.
 # The hourly tables are mounted read-only at /data/processed (see deploy/docker-compose.yml).

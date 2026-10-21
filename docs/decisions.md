@@ -205,3 +205,29 @@ hours, 75% in the busiest); calibrating separately by volume band is the next re
 **Final models** (`data/models/`, not committed): mean, 10th and 90th percentile models per
 target, trained on 2024-2025 through 2025-11-14, with the conformal margins in `manifest.json`.
 Step 7 serves them.
+
+## 13. Forecast store and API (Step 7)
+**Store.** PostgreSQL 16 (`bixi-db`) holds `stations`, `forecast_runs` and `forecasts` (one row per
+run, station, target and hour: forecast, 80% interval, and the actual count when known). Schema
+and queries use SQLAlchemy Core with portable types, so tests run on SQLite and production on
+PostgreSQL (also tested against a local PostgreSQL 16). PostGIS was not needed: no step queries
+geometry, and distances are computed in Python. Publishing a run is one transaction and never
+edits earlier runs; exactly one run is active, and `python -m bixi.forecast activate <run>`
+switches back if a run is wrong.
+
+**API.** FastAPI (`bixi-api`), read-only: `/health`, `/stations`, `/run`, `/forecasts/dates`,
+`/forecasts/{date}` (hourly, filter by station and target) and `/forecasts/{date}/stations` (net
+change per station for all day or a peak window). Times are returned in UTC and in local time with
+the offset, so the repeated hour on the autumn DST change stays unambiguous. The dashboard reads
+forecasts only through the API (`BIXI_API_URL`), which is the decoupling planned in section 1.
+
+**What is served, and why.** BIXI publishes trips after the fact, so a forecast for "the next 24
+hours from now" has no recent demand to lag on. The active run therefore replays the holdout:
+genuine day-ahead forecasts for 2025-10-01 to 2025-11-14 from the model trained through
+2025-09-30, shown with what actually happened. `python -m bixi.forecast export-model --start ...`
+applies the final models to any later period (for example 2026, once published) and refuses dates
+inside their training period, so a run can never show in-sample predictions as forecasts.
+
+**Flow.** Run files are built on the Mac (`export-holdout` or `export-model`), copied to the server
+(about 2 MB) and loaded inside the API container with `python -m bixi.forecast publish`. The server
+needs neither LightGBM nor the large backtest outputs.

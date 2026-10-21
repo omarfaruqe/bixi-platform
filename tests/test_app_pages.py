@@ -124,3 +124,67 @@ def test_model_performance_without_results_shows_hint(tmp_path, monkeypatch):
     app.run()
     assert not app.exception
     assert "python -m bixi.models" in app.info[0].value
+
+
+def _fake_api(path: str, params: tuple = ()):
+    points = [
+        {
+            "station_id": "1",
+            "target": "departures",
+            "ts_utc": f"2025-10-15T{(h + 4) % 24:02d}:00:00Z",
+            "local_time": f"2025-10-15T{h:02d}:00:00-04:00",
+            "local_hour": h,
+            "yhat": 5.0,
+            "lo": 3.0,
+            "hi": 8.0,
+            "actual": 6.0 if h != 8 else 12.0,
+        }
+        for h in range(24)
+    ]
+    station_day = {
+        "station_id": "1",
+        "name": "Alpha / Beta",
+        "capacity": 20,
+        "forecast_departures": 30.0,
+        "forecast_arrivals": 10.0,
+        "forecast_net": -20.0,
+        "actual_departures": 28.0,
+        "actual_arrivals": 9.0,
+        "actual_net": -19.0,
+    }
+    responses = {
+        "/run": {"source": "holdout", "trained_through": "2025-09-30"},
+        "/forecasts/dates": {"dates": ["2025-10-15", "2025-10-16"]},
+        "/stations": [{"station_id": "1", "name": "Alpha / Beta"}],
+        "/forecasts/2025-10-15": {"points": points},
+        "/forecasts/2025-10-16": {"points": points},
+        "/forecasts/2025-10-15/stations": {"stations": [station_day]},
+        "/forecasts/2025-10-16/stations": {"stations": [station_day]},
+    }
+    return responses[path]
+
+
+def test_forecasts_page_renders_from_the_api(monkeypatch):
+    import bixi.app.views.forecasts as view
+
+    monkeypatch.setattr(view, "get", _fake_api)
+    for language in ("en", "fr"):
+        app = AppTest.from_function(_page, args=("render_forecasts", language), default_timeout=30)
+        app.run()
+        assert not app.exception, app.exception
+        assert len(app.metric) == 4
+        assert app.metric[3].value == "23 / 24"  # the 8 h observation is outside [3, 8]
+
+
+def test_forecasts_page_reports_an_unavailable_api(monkeypatch):
+    import bixi.app.views.forecasts as view
+    from bixi.app.api_client import ApiUnavailable
+
+    def down(*_args, **_kwargs):
+        raise ApiUnavailable("connection refused")
+
+    monkeypatch.setattr(view, "get", down)
+    app = AppTest.from_function(_page, args=("render_forecasts", "fr"), default_timeout=30)
+    app.run()
+    assert not app.exception
+    assert "indisponible" in app.error[0].value

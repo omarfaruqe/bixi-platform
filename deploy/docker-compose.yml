@@ -1,14 +1,66 @@
 # Production deployment, isolated from anything else on the server:
 #   - its own compose project name ("bixi"), so compose commands never touch other stacks
-#   - its own container name and image tag
-#   - published on 127.0.0.1 only by default: the server's reverse proxy (Caddy) serves it
-#     at /bixi/. Set BIXI_BIND=0.0.0.0 and BIXI_BASE_PATH= (empty) to expose the port directly.
+#   - its own container names, image tag, network and database volume
+#   - nothing listens publicly: the dashboard (8501) and the API (8502) are bound to 127.0.0.1
+#     and the server's reverse proxy (Caddy) publishes the dashboard at /bixi/.
+#     The database has no published port at all.
 #
 # From the project root on the server:
 #   docker compose -p bixi -f deploy/docker-compose.yml up -d --build
+# Optional: put BIXI_DB_PASSWORD=<something long> in deploy/.env before the first start.
 name: bixi
 
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: bixi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bixi
+      POSTGRES_PASSWORD: "${BIXI_DB_PASSWORD:-bixi}"
+      POSTGRES_DB: bixi
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bixi -d bixi"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 256m
+    logging: *logging
+
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: bixi-platform:latest
+    container_name: bixi-api
+    restart: unless-stopped
+    command: ["uvicorn", "bixi.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+    environment:
+      DATABASE_URL: "postgresql+psycopg://bixi:${BIXI_DB_PASSWORD:-bixi}@db:5432/bixi"
+      BIXI_API_ROOT_PATH: "${BIXI_API_ROOT_PATH-}"
+    ports:
+      - "127.0.0.1:${BIXI_API_PORT:-8502}:8000"
+    volumes:
+      - ../data/processed:/data/processed:ro  # run files to publish
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 512m
+    logging: *logging
+
   app:
     build:
       context: ..
@@ -20,11 +72,13 @@ services:
       - "${BIXI_BIND:-127.0.0.1}:${BIXI_PORT:-8501}:8501"
     environment:
       STREAMLIT_SERVER_BASE_URL_PATH: "${BIXI_BASE_PATH-bixi}"
+      BIXI_API_URL: "http://api:8000"
     volumes:
       - ../data/processed:/data/processed:ro
+    depends_on:
+      - api
     mem_limit: 1g
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *logging
+
+volumes:
+  pgdata:

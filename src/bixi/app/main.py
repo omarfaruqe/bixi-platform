@@ -8,6 +8,7 @@ from bixi.app.registry import PAGES
 from bixi.app.state import get_translator, init_language, render_language_selector
 from bixi.app.views import (
     make_placeholder,
+    render_forecasts,
     render_methodology,
     render_model_performance,
     render_overview,
@@ -23,6 +24,7 @@ _CUSTOM_RENDERERS = {
     "overview": render_overview,
     "trip_analysis": render_trip_analysis,
     "station_map": render_station_map,
+    "forecasts": render_forecasts,
     "model_performance": render_model_performance,
     "methodology": render_methodology,
 }

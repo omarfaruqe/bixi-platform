@@ -1,5 +1,6 @@
 """Page views. Each view renders with the translator for the active language."""
 
+from bixi.app.views.forecasts import render_forecasts
 from bixi.app.views.methodology import render_methodology
 from bixi.app.views.model_performance import render_model_performance
 from bixi.app.views.overview import render_overview
@@ -9,6 +10,7 @@ from bixi.app.views.trip_analysis import render_trip_analysis
 
 __all__ = [
     "make_placeholder",
+    "render_forecasts",
     "render_methodology",
     "render_model_performance",
     "render_overview",

@@ -8,10 +8,10 @@ services:
     volumes:
       - ./data:/data
 
-  # PostgreSQL + PostGIS is not needed until Step 7.
+  # Local forecast database for development (Step 7); the server uses deploy/docker-compose.yml.
   # Start it with: docker compose --profile db up -d db
   db:
-    image: postgis/postgis:16-3.4
+    image: postgres:16-alpine
     profiles: ["db"]
     environment:
       POSTGRES_USER: bixi

@@ -1,7 +1,7 @@
-.PHONY: install test lint format app clean stations ingest features data
+.PHONY: install test lint format app api clean stations ingest features data
 
 install:
-	pip install -e ".[app,data,dev]"
+	pip install -e ".[app,data,ml,api,dev]"
 
 test:
 	pytest -q
@@ -26,6 +26,9 @@ data: stations ingest features
 
 app:
 	streamlit run src/bixi/app/main.py
+
+api:
+	uvicorn bixi.api.main:app --reload --port 8000
 
 clean:
 	rm -rf .pytest_cache .ruff_cache build dist *.egg-info

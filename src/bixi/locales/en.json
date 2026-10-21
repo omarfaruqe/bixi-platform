@@ -27,7 +27,7 @@
       "description": "Interactive map of stations with trip volume, net flow, and forecast overlays."
     },
     "forecasts": {
-      "description": "Departure and arrival forecasts for the next 24 hours, with prediction intervals."
+      "description": "Hourly departure and arrival forecasts issued a day ahead, with 80% prediction intervals, compared with what actually happened."
     },
     "rebalancing": {
       "description": "Scenario analysis of redistribution plans under explicit assumptions about starting bike inventory and station capacity."
@@ -181,5 +181,26 @@
     "col_skill": "Better than last week",
     "col_mean_actual": "Average trips per hour",
     "col_relative": "Error relative to volume"
+  },
+  "forecasts": {
+    "holdout_note": "These are genuine day-ahead forecasts from a model trained only on data up to {trained}, for {start} to {end}, the last weeks of the 2025 season, which the model never saw. BIXI publishes trip data after the fact, so the same pipeline will forecast 2026 once those trips are released.",
+    "date": "Date",
+    "kpi_forecast": "Forecast for the day",
+    "kpi_actual": "Actual for the day",
+    "kpi_error": "Daily total error",
+    "kpi_error_help": "Forecast daily total minus actual, as a share of the actual total.",
+    "kpi_inside": "Hours inside the interval",
+    "kpi_inside_help": "Hours whose actual count fell inside the 80% prediction interval. About 80% is expected over many days.",
+    "chart_title": "Hour by hour: {station}",
+    "chart_caption": "Blue line: forecast. Shaded band: 80% prediction interval. Black dots: what was observed.",
+    "alt_chart": "Line chart of the hourly forecast with its 80% interval and the observed counts",
+    "band": "80% interval",
+    "per_hour_axis": "Trips per hour",
+    "stations_title": "Which stations will fill up or run low?",
+    "stations_caption": "Forecast net change (arrivals minus departures) for the chosen time of day, all 50 stations, sorted from the largest expected loss to the largest gain. This is the input to the rebalancing simulation.",
+    "col_forecast_net": "Forecast net change",
+    "col_actual_net": "Actual net change",
+    "col_forecast_dep": "Forecast departures",
+    "col_forecast_arr": "Forecast arrivals"
   }
 }
