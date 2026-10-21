@@ -1,72 +1,90 @@
 # Plateforme de prévision de la demande et de rééquilibrage BIXI
 
+[![Live demo](https://img.shields.io/badge/live_demo-103.99.176.180%2Fbixi-2a78d6)](http://103.99.176.180/bixi/)
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)
+[![CI](https://github.com/omarfaruqe/bixi-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/omarfaruqe/bixi-platform/actions/workflows/ci.yml)
+
 🇬🇧 [English version](README.md)
 
 Un projet de science des données bilingue (English / Français) sur le réseau de vélos en libre-service
 BIXI de Montréal. Il répond à la question : **combien de départs et d’arrivées faut-il prévoir à
 chaque station, et où faut-il redistribuer les vélos?**
 
-> **État d’avancement :** étape 1 sur 10 terminée (structure du projet et squelette bilingue de
-> l’application). Un résumé des résultats (modèle par rapport aux références, scénarios de
-> rééquilibrage, lien vers la démo en ligne) sera ajouté ici après les étapes 6 à 9.
+**Démo en ligne :** <http://103.99.176.180/bixi/?lang=fr> (anglais : <http://103.99.176.180/bixi/>),
+un tableau de bord Streamlit servi avec Docker derrière Caddy.
+
+> **État d’avancement :** étapes 1 à 7 sur 10 terminées. L’étape 8 (simulation de
+> rééquilibrage) est en cours.
+
+## Principaux résultats
+- **Les prévisions battent les références.** Sur une période de validation de six semaines
+  (du 1er octobre au 14 novembre 2025, jamais vue à l’entraînement), LightGBM avec une fonction
+  de perte de Poisson a une erreur absolue moyenne de 1,92 départ par station-heure : **33 % de
+  moins** que « la même heure la semaine précédente » et 27 % de moins que la meilleure référence
+  simple.
+- **Les prévisions météo comptent, la météo parfaite à peine plus.** Les prévisions météo de la
+  veille réduisent l’erreur de 7 à 8 % au total et d’environ un tiers les heures de pluie;
+  connaître la météo réelle n’ajouterait que 0 à 3 %.
+- **Des intervalles fiables.** Les intervalles de prédiction à 80 % (modèles de quantiles et
+  calibration conforme) contiennent la valeur réelle 80 % du temps.
+- **Le navettage crée le déséquilibre.** En semaine, le matin, le Plateau perd des vélos et le
+  centre-ville se remplit : Square-Victoria gagne environ 125 vélos entre 7 h et 10 h, soit
+  3,4 fois ses 37 points d’ancrage.
+
+Détails : [docs/model_results.md](docs/model_results.md) et [docs/decisions.md](docs/decisions.md)
+(en anglais).
 
 ## Portée
-- Déplacements historiques de 2023 à 2025, restreints à 50 stations après vérification de la
-  qualité et de la continuité des données
-- Analyse horaire des départs et des arrivées
-- Prévisions de la demande sur 24 heures avec intervalles de prédiction, à partir de variables
-  météo et de calendrier
-- Carte interactive des stations
+- Déplacements historiques de 2023 à 2025 (39 millions), restreints à 50 stations après
+  vérification de la qualité et de la continuité des données
+- Analyse horaire des départs et des arrivées, carte des stations
+- Prévisions horaires émises la veille avec intervalles de prédiction à 80 %, à partir de la
+  demande passée, du calendrier québécois, des événements et des prévisions météo archivées
+  (aucune information future)
+- Base de prévisions (PostgreSQL) et API en lecture seule (FastAPI)
 - Simulation de rééquilibrage selon des hypothèses explicites sur l’inventaire initial de vélos et
   la capacité des stations
 
 **Limite importante :** les déplacements observés ne correspondent pas à la demande réelle. Les
 déplacements historiques seuls ne permettent pas d’établir les ruptures de stock ni la demande
-non satisfaite; les résultats du rééquilibrage sont donc des estimations de scénarios. Voir
-[docs/decisions.md](docs/decisions.md) (en anglais).
+non satisfaite; les résultats du rééquilibrage sont donc des estimations de scénarios.
 
 ## Feuille de route
 | Étape | Livrable | État |
 |---|---|---|
 | 1 | Structure du projet et squelette bilingue de l’application | Terminée |
-| 2 | Téléchargement, inspection et validation des données BIXI | Prochaine |
-| 3 | Pipeline d’ingestion reproductible | |
-| 4 | Exploration des tendances et cartes des stations | |
-| 5 | Météo et tables de modélisation horaires | |
-| 6 | Modèles de référence et évaluation des prévisions | |
-| 7 | Stockage et diffusion des prévisions avec FastAPI | |
-| 8 | Simulation de redistribution | |
+| 2 | Téléchargement, inspection et validation des données BIXI | Terminée |
+| 3 | Pipeline d’ingestion reproductible | Terminée |
+| 4 | Exploration des déplacements et carte des stations | Terminée |
+| 5 | Météo et tables horaires de modélisation | Terminée |
+| 6 | Modèles de référence et évaluation des prévisions | Terminée |
+| 7 | Stockage et diffusion des prévisions avec FastAPI | Terminée |
+| 8 | Simulation de redistribution | En cours |
 | 9 | Tableau de bord bilingue complet | |
-| 10 | Documentation, tests et déploiement | |
+| 10 | Documentation, tests, déploiement | Déployé tôt; finition à venir |
 
 ## Démarrage rapide
 ```bash
 python -m venv .venv && source .venv/bin/activate
-make install        # pip install -e ".[app,dev]"
+make install        # pip install -e ".[app,data,ml,api,dev]"
 make test
-make app            # http://localhost:8501  (ajoutez ?lang=fr pour le français)
+make data           # stations, ingestion, variables (données brutes : python -m bixi.download all)
+python -m bixi.models   # validations et modèles finaux (macOS : brew install libomp)
+make app            # http://localhost:8501/?lang=fr
+make api            # http://localhost:8000/docs  (nécessite DATABASE_URL)
 ```
-Ou avec Docker : `docker compose up --build`.
+Déploiement sur un serveur avec Docker : [deploy/README.md](deploy/README.md) (en anglais).
 
-## Structure du projet
-```
-src/bixi/
-  i18n.py            traduction et formatage selon la langue
-  locales/           en.json, fr.json (tout le texte de l’interface)
-  config.py          paramètres lus depuis les variables d’environnement
-  app/               tableau de bord Streamlit (registre, état, vues)
-tests/               tests de cohérence et de formatage i18n
-docs/decisions.md    décisions de conception et protocole d’évaluation
-```
-
-## Prise en charge des langues
-L’anglais est la langue par défaut; le sélecteur dans la barre latérale change la navigation, les
+## Langues
+L’anglais est la langue par défaut; le sélecteur de la barre latérale change la navigation, les
 filtres, les libellés des graphiques, les infobulles, les explications et les messages d’erreur.
 Les noms de stations restent dans leur forme originale. Les nombres, pourcentages et dates suivent
-la langue choisie (conventions canadiennes). Pour ajouter du texte, ajoutez la même clé dans
-`en.json` et `fr.json`; les tests échouent si les deux fichiers divergent.
+la langue choisie (paramètres régionaux canadiens).
 
-## Conventions
-Le code, les colonnes de base de données et les champs d’API sont en anglais. Les données
-proviennent des données ouvertes de BIXI; vérifiez les conditions d’utilisation en vigueur et citez
-la source avant de publier des résultats.
+## Données et conventions
+Déplacements : [données ouvertes de BIXI Montréal](https://bixi.com/fr/donnees-ouvertes/).
+Météo : [Open-Meteo](https://open-meteo.com/). Le code, les colonnes de la base de données et les
+champs de l’API sont en anglais.
