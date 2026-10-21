@@ -1,4 +1,4 @@
-.PHONY: install test lint format app clean stations ingest data
+.PHONY: install test lint format app clean stations ingest features data
 
 install:
 	pip install -e ".[app,data,dev]"
@@ -19,7 +19,10 @@ stations:
 ingest:
 	python -m bixi.ingest
 
-data: stations ingest
+features:
+	python -m bixi.features
+
+data: stations ingest features
 
 app:
 	streamlit run src/bixi/app/main.py

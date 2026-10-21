@@ -1,4 +1,4 @@
-"""Command line interface:  python -m bixi.download {trips,stations,weather,all}"""
+"""Command line interface:  python -m bixi.download {trips,stations,weather,weather-forecast,all}"""
 
 from __future__ import annotations
 
@@ -10,7 +10,11 @@ from bixi.config import get_settings
 from bixi.download.http import DownloadError
 from bixi.download.stations import download_gbfs
 from bixi.download.trips import TRIP_ARCHIVES, download_trips
-from bixi.download.weather import download_weather
+from bixi.download.weather import (
+    DEFAULT_FORECAST_MODEL,
+    download_weather,
+    download_weather_forecasts,
+)
 
 DEFAULT_YEARS = (2023, 2024, 2025)
 
@@ -41,6 +45,15 @@ def build_parser() -> argparse.ArgumentParser:
     stations = sub.add_parser("stations", help="current station list and capacities (GBFS)")
     add_common(stations, years=False)
     add_common(sub.add_parser("weather", help="hourly weather from Open-Meteo"))
+    forecast = sub.add_parser(
+        "weather-forecast", help="archived day-ahead weather forecasts (leakage-safe features)"
+    )
+    add_common(forecast)
+    forecast.add_argument(
+        "--model",
+        default=DEFAULT_FORECAST_MODEL,
+        help=f"Open-Meteo weather model (default: {DEFAULT_FORECAST_MODEL})",
+    )
     everything = sub.add_parser("all", help="trips + stations + weather")
     add_common(everything)
     return parser
@@ -64,6 +77,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             download_gbfs(raw_dir)
         if command in ("weather", "all"):
             download_weather(args.years, raw_dir, force=args.force)
+        if command in ("weather-forecast", "all"):
+            download_weather_forecasts(
+                args.years,
+                raw_dir,
+                model=getattr(args, "model", DEFAULT_FORECAST_MODEL),
+                force=args.force,
+            )
     except (DownloadError, FileNotFoundError, ValueError) as error:
         logging.error("%s", error)
         logging.error(

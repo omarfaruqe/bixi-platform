@@ -125,3 +125,33 @@ Findings (2023-2025 season, 50 stations):
 - Over a full weekday flows do not balance (Berri / Cherrier loses about 89 bikes a day), so
   rebalancing already happens in operations and is invisible in trip data.
 - The busiest day in the sample is 2025-06-11 (10,040 departures at the 50 stations).
+
+## 11. Modelling table and leakage-safe features (Step 5)
+`python -m bixi.features` (or `make features`) writes `data/processed/features.parquet`: one row
+per study station and season hour (770,550 rows), the two targets (departures, arrivals) and the
+feature groups listed in `src/bixi/features/build.py` (`FEATURE_GROUPS`).
+
+A forecast is issued at time T for hours T+1 ... T+24, so every feature for hour t is known at
+t - 24 h or earlier, or is known far ahead:
+- **Calendar**: local hour, weekday, weekend, Québec holiday, month, day of season, year.
+- **Station**: id, docks, location, volume tier, station type.
+- **Demand lags**: 24 h, 48 h, 1 week and 2 weeks back, the mean of the same hour over the last
+  four weeks, and the 24-hour total ending 24 h earlier. Lags join on shifted timestamps, so they
+  never reach across the winter gap or slip at DST changes. Network-wide departures 24 h and
+  1 week back.
+- **Events**: Jazz festival, Francos, Grand Prix and Osheaga, 2023-2025, dates checked against
+  published sources (`reference/events.csv`, one source URL per row). Features: any event that
+  day, and distance from the station to the nearest active venue.
+- **Weather, production**: archived day-ahead forecasts (`fc_*`, Open-Meteo Previous Runs API,
+  `*_previous_day1`, about 24 h lead), downloaded with `python -m bixi.download weather-forecast`.
+- **Weather, oracle only**: observed weather (`obs_*`, ERA5). It is not available a day ahead, so
+  it is used only to measure how much perfect weather knowledge would add.
+
+Early signal checks: rain hours on summer weekday evenings have about 24% fewer departures;
+station-hours within 1 km of an active festival venue have about twice the evening arrivals (partly
+because those stations are busy anyway). Tests check lag offsets, the 24-hour minimum, the winter
+gap, per-station isolation, and that production features contain no observed weather or targets.
+
+Open-Meteo archives day-ahead forecasts from January 2024 for most models (GFS temperature from
+2021), so 2023 coverage depends on the model; `features_report.txt` records coverage per year
+and forecast error against observed weather.

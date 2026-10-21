@@ -1,0 +1,13 @@
+event,start_date,end_date,venue,lat,lon,source
+jazz_festival,2023-06-29,2023-07-08,Quartier des spectacles,45.5085,-73.5664,https://www.mcgill.ca/music/channels/news/schulich-guide-festival-international-de-jazz-de-montreal-348838
+jazz_festival,2024-06-27,2024-07-06,Quartier des spectacles,45.5085,-73.5664,https://timeout.com/montreal/news/top-5-shows-at-montreals-jazz-festival-2024-062524
+jazz_festival,2025-06-26,2025-07-05,Quartier des spectacles,45.5085,-73.5664,https://festapp.io/festivals/festival-international-de-jazz-de-montreal/2025
+francos,2023-06-09,2023-06-17,Quartier des spectacles,45.5085,-73.5664,https://www.noovo.info/nouvelle/les-francos-revelent-leur-programmation-interieure-pour-lete-2023.html
+francos,2024-06-14,2024-06-22,Quartier des spectacles,45.5085,-73.5664,https://themontrealeronline.com/2024/06/francos-de-montreal-june-14-22-2024/
+francos,2025-06-13,2025-06-21,Quartier des spectacles,45.5085,-73.5664,https://festapp.io/festivals/francos-de-montreal/2025
+grand_prix,2023-06-16,2023-06-18,Circuit Gilles-Villeneuve,45.5005,-73.5228,https://en.wikipedia.org/wiki/2023_Canadian_Grand_Prix
+grand_prix,2024-06-07,2024-06-09,Circuit Gilles-Villeneuve,45.5005,-73.5228,https://en.wikipedia.org/wiki/2024_Canadian_Grand_Prix
+grand_prix,2025-06-13,2025-06-15,Circuit Gilles-Villeneuve,45.5005,-73.5228,https://en.wikipedia.org/wiki/2025_Canadian_Grand_Prix
+osheaga,2023-08-04,2023-08-06,Parc Jean-Drapeau,45.5130,-73.5330,https://www.jambase.com/festival/osheaga-2023
+osheaga,2024-08-02,2024-08-04,Parc Jean-Drapeau,45.5130,-73.5330,https://www.musicfestivalwizard.com/festivals/osheaga-2024/
+osheaga,2025-08-01,2025-08-03,Parc Jean-Drapeau,45.5130,-73.5330,https://www.ajournalofmusicalthings.com/heres-another-shot-of-summer-the-lineup-for-osheaga-2025/
