@@ -54,7 +54,8 @@
     "day_type": "Type de jour",
     "weekday": "Jour de semaine",
     "weekend": "Fin de semaine",
-    "holiday": "Jour férié"
+    "holiday": "Jour férié",
+    "years": "Années"
   },
   "charts": {
     "departures": "Départs",
@@ -75,5 +76,45 @@
     "caveat": "Mise en garde importante",
     "loading": "Chargement…",
     "no_data": "Aucune donnée disponible pour la sélection actuelle."
+  },
+  "analysis": {
+    "per_hour_axis": "Déplacements moyens par heure",
+    "net_axis": "Variation nette moyenne de vélos par heure",
+    "per_day_axis": "Départs par jour",
+    "smoothed": "Moyenne sur 7 jours",
+    "that_day": "Ce jour-là",
+    "kpi_departures": "Départs dans la sélection",
+    "kpi_per_day": "Départs par jour",
+    "kpi_peak_hour": "Heure la plus achalandée",
+    "kpi_weekend": "Fin de semaine vs semaine",
+    "kpi_weekend_help": "Départs moyens un jour de fin de semaine, en proportion d’un jour de semaine moyen.",
+    "profile_title": "Rythme quotidien",
+    "profile_caption": "Départs et arrivées moyens à chaque heure de la journée, pour les stations et les jours sélectionnés.",
+    "net_title": "Quand les stations se remplissent-elles ou se vident-elles?",
+    "net_caption": "Arrivées moins départs à chaque heure. Barres bleues : la sélection gagne des vélos. Barres rouges : elle en perd.",
+    "heatmap_title": "Départs selon le jour et l’heure",
+    "heatmap_caption": "Plus la case est foncée, plus il y a de départs. Comparez les deux pointes de navettage en semaine avec la pointe unique de l’après-midi la fin de semaine.",
+    "trend_title": "Au fil de la saison",
+    "trend_caption": "Départs par jour (moyenne sur 7 jours), une ligne par année. La saison modélisée va du 15 avril au 15 novembre.",
+    "alt_profile": "Graphique linéaire des départs et arrivées moyens selon l’heure",
+    "alt_net": "Diagramme à barres de la variation nette moyenne de vélos selon l’heure",
+    "alt_heatmap": "Carte de chaleur des départs moyens selon le jour et l’heure",
+    "alt_trend": "Graphique linéaire des départs quotidiens au fil de la saison, pour chaque année"
+  },
+  "map": {
+    "window": "Moment de la journée",
+    "all_day": "Toute la journée",
+    "morning_peak": "Pointe du matin (7 h–10 h)",
+    "evening_peak": "Pointe du soir (16 h–19 h)",
+    "capacity": "Points d’ancrage",
+    "net": "Variation nette par jour",
+    "legend": "Les cercles bleus gagnent des vélos (plus d’arrivées que de départs); les cercles rouges en perdent. La taille du cercle indique le nombre total de déplacements. Les points gris représentent le reste du réseau BIXI. Les valeurs sont des moyennes par jour pour les années, les types de jours et le moment de la journée sélectionnés.",
+    "losing_title": "Stations qui perdent le plus de vélos",
+    "gaining_title": "Stations qui gagnent le plus de vélos",
+    "col_station": "Station",
+    "col_net": "Variation nette par jour",
+    "col_share": "Part des points d’ancrage",
+    "share_note": "La part des points d’ancrage correspond à la variation nette moyenne divisée par le nombre de points d’ancrage de la station. Au-delà de 100 %, la variation dépasse la taille de la station : elle ne peut pas être absorbée sans déplacer des vélos, quel que soit l’inventaire de départ.",
+    "alt": "Carte des 50 stations étudiées, colorées selon la variation nette de vélos et dimensionnées selon le volume de déplacements"
   }
 }

@@ -99,3 +99,29 @@ Observed extremes are kept, not clipped: Métro St-Laurent (24 docks) recorded 2
 hour on a festival evening, when BIXI runs staffed overflow docking. Such hours are an argument
 for event features in Step 5, and another reminder that observed trips are not station capacity.
 
+## 10. Trip analysis and station map (Step 4)
+Pages: *Trip analysis* (daily rhythm, hourly net flow, weekday x hour heatmap, season trend per
+year) and *Station map* (net flow by time window, top stations losing and gaining bikes).
+Aggregations live in `src/bixi/analysis/patterns.py`; figures in `src/bixi/app/charts.py`; both
+are Streamlit-free and tested. Québec holidays (`src/bixi/features/calendar.py`) define the
+weekday / weekend / holiday day types and will be reused as model features in Step 5.
+
+Chart colours come from a validated colour-blind-safe palette with fixed roles: departures blue,
+arrivals orange, years blue / orange / aqua in fixed order; net flow is diverging blue (gains
+bikes) to red (loses bikes) with a grey midpoint. The app accent is the same blue, so red only
+ever means "losing bikes". The map's colour scale is capped at the 90th percentile of absolute
+net flow so one extreme station does not wash out the rest. All numbers, hours, weekday and
+month names are formatted for the selected language.
+
+Findings (2023-2025 season, 50 stations):
+- Weekday departures peak at 17:00 with a smaller 8:00 peak; weekends have one afternoon peak
+  (15:00-16:00) and about 90% of weekday volume.
+- Commuting moves bikes from the Plateau to downtown in the morning and back in the evening.
+  On weekday mornings (7-10 h) Plateau stations such as Marquette / Laurier lose about 21 bikes,
+  while Square-Victoria gains about 125 bikes, 339% of its 37 docks.
+- Several downtown stations gain more than their whole dock count in the morning peak
+  (Square-Victoria, Square Viger, Wellington / Queen, University / Milton). That change cannot be
+  absorbed without moving bikes, whatever the starting inventory, which is the case for Step 8.
+- Over a full weekday flows do not balance (Berri / Cherrier loses about 89 bikes a day), so
+  rebalancing already happens in operations and is invisible in trip data.
+- The busiest day in the sample is 2025-06-11 (10,040 departures at the 50 stations).

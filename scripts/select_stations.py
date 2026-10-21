@@ -7,6 +7,7 @@ Outputs:
     data/processed/station_crosswalk.csv              every historical name -> live station_id
     data/processed/station_selection.txt              the report (selection criteria and mix)
     reference/selected_stations.csv                   the 50 stations; committed to git
+    reference/network_stations.csv                    every live station (map context); committed
 
 Usage, from the project root:
     python scripts/select_stations.py
@@ -46,6 +47,7 @@ GBFS_DIR = ROOT / "data/raw/gbfs"
 CROSSWALK = ROOT / "data/processed/station_crosswalk.csv"
 REPORT = ROOT / "data/processed/station_selection.txt"
 SELECTED = ROOT / "reference/selected_stations.csv"
+NETWORK = ROOT / "reference/network_stations.csv"
 
 
 def to_float(text: str) -> float | None:
@@ -146,6 +148,13 @@ def main() -> None:
             )
 
     capacities = [s.capacity for s, _ in picked]
+    # Whole live network: map context for the dashboard, small enough to commit.
+    with NETWORK.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["station_id", "name", "lat", "lon", "capacity"])
+        for s in sorted(live, key=lambda s: int(s.station_id)):
+            writer.writerow([s.station_id, s.name, f"{s.lat:.6f}", f"{s.lon:.6f}", s.capacity])
+
     linked_names = sum(1 for link in links if link.station_id)
     lines = [
         "BIXI station identity and selection",
@@ -179,7 +188,7 @@ def main() -> None:
         )
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
-    written = ", ".join(str(p.relative_to(ROOT)) for p in (CROSSWALK, SELECTED, REPORT))
+    written = ", ".join(str(p.relative_to(ROOT)) for p in (CROSSWALK, SELECTED, NETWORK, REPORT))
     print(f"\nWrote {written}")
 
 

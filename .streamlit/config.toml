@@ -1,0 +1,6 @@
+# Theme: accent colour from the chart palette, so red stays reserved for "station loses bikes".
+[theme]
+primaryColor = "#2a78d6"
+
+[browser]
+gatherUsageStats = false

@@ -103,3 +103,15 @@ def test_date_formatting_follows_language():
     day = date(2025, 7, 14)
     assert Translator("en").date(day) == "July 14, 2025"
     assert Translator("fr").date(day) == "14 juillet 2025"
+
+
+def test_weekday_and_month_names_follow_language():
+    assert Translator("en").weekday_names()[0] == "Mon"
+    assert Translator("fr").weekday_names()[0].startswith("lun")
+    assert Translator("en").month_names()[7] == "Jul"
+    assert Translator("fr").month_names()[7].startswith("juil")
+
+
+def test_hour_labels_follow_language():
+    assert Translator("en").hour(8) == "08:00"
+    assert Translator("fr").hour(8) == "8 h"

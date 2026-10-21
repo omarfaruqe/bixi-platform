@@ -23,7 +23,7 @@ from types import MappingProxyType
 from typing import Any
 
 from babel import Locale
-from babel.dates import format_date, format_datetime
+from babel.dates import format_date, format_datetime, get_day_names, get_month_names
 from babel.numbers import format_decimal, format_percent
 
 SUPPORTED_LANGUAGES: tuple[str, ...] = ("en", "fr")
@@ -107,3 +107,16 @@ class Translator:
 
     def datetime(self, value: datetime, style: str = "medium") -> str:
         return format_datetime(value, format=style, locale=self.locale)
+
+    def weekday_names(self, width: str = "abbreviated") -> list[str]:
+        """Monday-first weekday names ('Mon' / 'lun.')."""
+        names = get_day_names(width, context="format", locale=self.locale)
+        return [names[i] for i in range(7)]
+
+    def month_names(self, width: str = "abbreviated") -> dict[int, str]:
+        """Month names keyed 1-12 ('Jul' / 'juil.')."""
+        return dict(get_month_names(width, context="stand-alone", locale=self.locale))
+
+    def hour(self, value: int) -> str:
+        """Clock hour label: '17:00' in English, '17 h' in French (Québec usage)."""
+        return f"{value} h" if self.language == "fr" else f"{value:02d}:00"

@@ -54,7 +54,8 @@
     "day_type": "Day type",
     "weekday": "Weekday",
     "weekend": "Weekend",
-    "holiday": "Holiday"
+    "holiday": "Holiday",
+    "years": "Years"
   },
   "charts": {
     "departures": "Departures",
@@ -75,5 +76,45 @@
     "caveat": "Important caveat",
     "loading": "Loading…",
     "no_data": "No data available for the current selection."
+  },
+  "analysis": {
+    "per_hour_axis": "Average trips per hour",
+    "net_axis": "Average net bikes per hour",
+    "per_day_axis": "Departures per day",
+    "smoothed": "7-day average",
+    "that_day": "That day",
+    "kpi_departures": "Departures in selection",
+    "kpi_per_day": "Departures per day",
+    "kpi_peak_hour": "Busiest hour",
+    "kpi_weekend": "Weekend vs weekday",
+    "kpi_weekend_help": "Average departures on a weekend day as a share of an average weekday.",
+    "profile_title": "Daily rhythm",
+    "profile_caption": "Average departures and arrivals in each hour of the day, for the selected stations and days.",
+    "net_title": "When do stations fill up or empty?",
+    "net_caption": "Arrivals minus departures in each hour. Blue bars: the selection gains bikes. Red bars: it loses bikes.",
+    "heatmap_title": "Departures by weekday and hour",
+    "heatmap_caption": "Darker cells mean more departures. Compare the two commuting peaks on weekdays with the single afternoon peak on weekends.",
+    "trend_title": "Across the season",
+    "trend_caption": "Departures per day (7-day average), one line per year. The modelled season runs from April 15 to November 15.",
+    "alt_profile": "Line chart of average departures and arrivals by hour of day",
+    "alt_net": "Bar chart of average net bike change by hour of day",
+    "alt_heatmap": "Heatmap of average departures by weekday and hour",
+    "alt_trend": "Line chart of daily departures across the season for each year"
+  },
+  "map": {
+    "window": "Time of day",
+    "all_day": "All day",
+    "morning_peak": "Morning peak (7–10 am)",
+    "evening_peak": "Evening peak (4–7 pm)",
+    "capacity": "Docks",
+    "net": "Net change per day",
+    "legend": "Blue circles gain bikes (more arrivals than departures); red circles lose bikes. Circle size shows total trips. Grey dots are the rest of the BIXI network. Values are averages per day for the selected years, day types, and time of day.",
+    "losing_title": "Losing the most bikes",
+    "gaining_title": "Gaining the most bikes",
+    "col_station": "Station",
+    "col_net": "Net change per day",
+    "col_share": "Share of docks",
+    "share_note": "Share of docks is the average net change divided by the station's number of docks. Above 100%, the change is larger than the whole station, so it cannot be absorbed without moving bikes, whatever the starting inventory.",
+    "alt": "Map of the 50 study stations, coloured by net bike change and sized by trip volume"
   }
 }
