@@ -86,7 +86,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "activate":
-        store.activate(engine, args.run_id)
+        try:
+            store.activate(engine, args.run_id)
+        except KeyError:
+            known = ", ".join(r["run_id"] for r in store.list_runs(engine)) or "none"
+            print(f"Unknown run {args.run_id!r}. Published runs: {known}", file=sys.stderr)
+            return 1
         print(f"Active run: {args.run_id}")
         return 0
     return 1

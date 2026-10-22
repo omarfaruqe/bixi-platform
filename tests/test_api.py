@@ -159,3 +159,21 @@ def test_activate_switches_runs_and_rejects_unknown_ids(engine):
     assert store.active_run(engine).run_id == "holdout-2025"
     with pytest.raises(KeyError):
         store.activate(engine, "missing")
+
+
+def test_republishing_a_run_replaces_it(engine):
+    """Regression: the second publish of a run hit the forecasts foreign key on PostgreSQL."""
+    run, df = publish.holdout_run(predictions(datetime(2025, 10, 31, 4, tzinfo=UTC), 24))
+    count = store.publish_run(engine, run, publish.forecast_rows(df))
+    assert count == df.height
+    assert [r["run_id"] for r in store.list_runs(engine)] == ["holdout-2025"]
+    with engine.connect() as conn:
+        assert conn.exec_driver_sql("PRAGMA foreign_keys").scalar() == 1
+        stored = conn.execute(sa_count(store.forecasts)).scalar()
+    assert stored == df.height
+
+
+def sa_count(table):
+    import sqlalchemy as sa
+
+    return sa.select(sa.func.count()).select_from(table)

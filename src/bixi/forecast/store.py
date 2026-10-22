@@ -62,7 +62,14 @@ forecasts = sa.Table(
 
 
 def engine_for(url: str) -> Engine:
-    return sa.create_engine(url, pool_pre_ping=True, future=True)
+    engine = sa.create_engine(url, pool_pre_ping=True, future=True)
+    if engine.dialect.name == "sqlite":
+        # SQLite ignores foreign keys unless asked; enforce them so tests behave like PostgreSQL.
+        @sa.event.listens_for(engine, "connect")
+        def _foreign_keys(dbapi_connection, _record) -> None:
+            dbapi_connection.execute("PRAGMA foreign_keys=ON")
+
+    return engine
 
 
 def create_schema(engine: Engine) -> None:
@@ -103,8 +110,9 @@ def publish_run(
     """Insert one run and its forecasts in a single transaction; optionally make it active."""
     count = 0
     with engine.begin() as conn:
-        conn.execute(runs.delete().where(runs.c.run_id == run.run_id))
+        # Republishing replaces the run: children first, or the foreign key refuses the delete.
         conn.execute(forecasts.delete().where(forecasts.c.run_id == run.run_id))
+        conn.execute(runs.delete().where(runs.c.run_id == run.run_id))
         conn.execute(
             runs.insert(),
             {
