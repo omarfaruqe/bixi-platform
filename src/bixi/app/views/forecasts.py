@@ -46,8 +46,11 @@ def render_forecasts() -> None:
         run = get("/run")
         dates = [date.fromisoformat(d) for d in get("/forecasts/dates")["dates"]]
         stations = get("/stations")
-    except ApiUnavailable:
-        st.error(tr.t("errors.api_unavailable"))
+    except ApiUnavailable as error:
+        if error.no_active_run:
+            st.info(tr.t("errors.no_forecast_run"))
+        else:
+            st.error(tr.t("errors.api_unavailable"))
         return
     if not dates:
         st.info(tr.t("common.no_data"))

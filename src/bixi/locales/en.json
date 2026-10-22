@@ -58,7 +58,8 @@
     "finding_rebalancing": "**Forecast-based rebalancing pays off.** Truck routes optimized from the forecasts cut problem hours by {reduction}, against {rule} for a dispatcher's rule of thumb, while driving {km} less. That is {share} of what perfect foresight would achieve.",
     "finding_commute": "**Commuting drives the imbalance.** On weekday mornings ({window}) the Plateau loses bikes and downtown fills up: {station} gains about {gain} bikes, {ratio} times its {capacity} docks.",
     "explore_title": "Explore",
-    "missing_results": "Some results are not available yet, so a few numbers are missing."
+    "missing_results": "Some results are not available yet, so a few numbers are missing.",
+    "service_no_run": "Forecast service online · no forecasts published yet"
   },
   "methodology": {
     "assumptions_title": "Assumptions and limitations",
@@ -121,7 +122,8 @@
   "errors": {
     "data_not_found": "Data file not found: {path}. Run the ingestion pipeline first.",
     "generic": "Something went wrong. Please try again.",
-    "api_unavailable": "The forecast service is unavailable."
+    "api_unavailable": "The forecast service is unavailable.",
+    "no_forecast_run": "The forecast service is running, but no forecasts have been published yet. Load a run with: python -m bixi.forecast publish <run file>."
   },
   "common": {
     "caveat": "Important caveat",

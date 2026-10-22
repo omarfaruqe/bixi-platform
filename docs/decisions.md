@@ -289,3 +289,22 @@ stock at pick-up time.
   footer credits BIXI open data and Open-Meteo and links to the source code; the Step 1
   placeholder page and its "planned for step N" text are gone. Headline cards use equal columns
   and short labels so French text does not truncate; details go in the help tooltips.
+
+## 16. Documentation, tests and deployment polish (Step 10)
+- **A bug found in production.** Republishing a forecast run failed on PostgreSQL: the run row was
+  deleted before its forecasts, which the foreign key refuses. SQLite had hidden it because it
+  ignores foreign keys by default. Fixes: forecasts are deleted first; SQLite connections now
+  enforce foreign keys; a regression test republishes a run; and the store and API tests can run
+  on PostgreSQL (`BIXI_TEST_DATABASE_URL`), which CI does on every push.
+- **CI.** Lint and format check, about 120 tests with coverage (about 80% of lines; the uncovered
+  code is mostly the command-line entry points of the offline pipeline and the downloaders), the
+  store tests on PostgreSQL 16, and a second job that builds the production image and starts the
+  full Docker Compose stack with a smoke test. Images are never built on the development machine
+  for deployment; the server builds from the same Dockerfile.
+- **Service states.** The dashboard distinguishes an unreachable API from an API with no published
+  run (HTTP 503), and says which command fixes the second.
+- **Deployment.** `deploy/sync_data.sh` copies the 11 result files the server needs (about 5 MB)
+  in one ssh session and fixes their permissions, replacing four manual `scp` and `chmod` steps.
+  The deployment guide gained a troubleshooting table built from the problems met while deploying.
+- **Documentation.** README in English and French with architecture diagram, screenshots, test
+  inventory and full reproduction commands; a changelog; version 1.0.0.

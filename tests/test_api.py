@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import UTC, date, datetime, timedelta
 
 import polars as pl
@@ -61,7 +62,10 @@ def predictions(start: datetime, hours: int) -> pl.DataFrame:
 
 @pytest.fixture
 def engine(tmp_path):
-    engine = store.engine_for(f"sqlite:///{tmp_path / 'forecasts.db'}")
+    """SQLite by default; set BIXI_TEST_DATABASE_URL to run the same tests on PostgreSQL (CI)."""
+    url = os.getenv("BIXI_TEST_DATABASE_URL") or f"sqlite:///{tmp_path / 'forecasts.db'}"
+    engine = store.engine_for(url)
+    store.metadata.drop_all(engine)
     store.create_schema(engine)
     store.upsert_stations(engine, publish.station_rows(STATIONS))
     # 2025-10-31 04:00 UTC = local midnight; 4 days, including the DST change on 2025-11-02.
@@ -168,7 +172,8 @@ def test_republishing_a_run_replaces_it(engine):
     assert count == df.height
     assert [r["run_id"] for r in store.list_runs(engine)] == ["holdout-2025"]
     with engine.connect() as conn:
-        assert conn.exec_driver_sql("PRAGMA foreign_keys").scalar() == 1
+        if engine.dialect.name == "sqlite":
+            assert conn.exec_driver_sql("PRAGMA foreign_keys").scalar() == 1
         stored = conn.execute(sa_count(store.forecasts)).scalar()
     assert stored == df.height
 

@@ -286,3 +286,17 @@ def test_rebalancing_page_without_results_shows_hint(tmp_path, monkeypatch):
     app.run()
     assert not app.exception
     assert "python -m bixi.rebalancing" in app.info[0].value
+
+
+def test_forecasts_page_without_a_published_run(monkeypatch):
+    import bixi.app.views.forecasts as view
+    from bixi.app.api_client import ApiUnavailable
+
+    def no_run(*_args, **_kwargs):
+        raise ApiUnavailable("503: no active forecast run", status=503)
+
+    monkeypatch.setattr(view, "get", no_run)
+    app = AppTest.from_function(_page, args=("render_forecasts", "en"), default_timeout=30)
+    app.run()
+    assert not app.exception and not app.error
+    assert "python -m bixi.forecast publish" in app.info[0].value

@@ -23,8 +23,12 @@ COLUMNS = 3
 def _service_badge(tr: Translator) -> None:
     try:
         run = get("/run")
-    except ApiUnavailable:
-        st.badge(tr.t("overview.service_offline"), icon=":material/cloud_off:", color="gray")
+    except ApiUnavailable as error:
+        if error.no_active_run:
+            label = tr.t("overview.service_no_run")
+            st.badge(label, icon=":material/hourglass_empty:", color="orange")
+        else:
+            st.badge(tr.t("overview.service_offline"), icon=":material/cloud_off:", color="gray")
         return
     trained = tr.date(date.fromisoformat(run["trained_through"]), "long")
     st.badge(tr.t("overview.service_online", date=trained), icon=":material/check:", color="green")

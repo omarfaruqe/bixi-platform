@@ -8,6 +8,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:  # the store and API tests also run on PostgreSQL, as in production
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: bixi
+          POSTGRES_PASSWORD: bixi
+          POSTGRES_DB: bixi_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U bixi -d bixi_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      BIXI_TEST_DATABASE_URL: postgresql+psycopg://bixi:bixi@localhost:5432/bixi_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -17,6 +30,32 @@ jobs:
       - name: Install
         run: pip install -e ".[app,data,ml,api,opt,dev]"
       - name: Lint
-        run: ruff check src tests
+        run: |
+          ruff check src tests
+          ruff format --check src tests
       - name: Test
-        run: pytest -q
+        run: pytest -q --cov=bixi --cov-report=term --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  docker:
+    # Builds the production image and starts the stack exactly as on the server.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start
+        run: docker compose -p bixi-ci -f deploy/docker-compose.yml up -d --build --wait --wait-timeout 180
+      - name: Smoke test
+        run: |
+          curl -fsS http://127.0.0.1:8502/health
+          curl -fsS http://127.0.0.1:8501/bixi/_stcore/health
+          curl -fsS -o /dev/null http://127.0.0.1:8501/bixi/
+          docker compose -p bixi-ci -f deploy/docker-compose.yml exec -T api python -m bixi.forecast runs
+      - name: Logs on failure
+        if: failure()
+        run: docker compose -p bixi-ci -f deploy/docker-compose.yml logs --tail 100
+      - name: Stop
+        if: always()
+        run: docker compose -p bixi-ci -f deploy/docker-compose.yml down -v

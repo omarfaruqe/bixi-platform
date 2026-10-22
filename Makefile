@@ -1,4 +1,4 @@
-.PHONY: install test lint format app api clean stations ingest features data rebalance
+.PHONY: install test lint format check coverage app api clean stations ingest features data rebalance
 
 install:
 	pip install -e ".[app,data,ml,api,opt,dev]"
@@ -8,6 +8,12 @@ test:
 
 lint:
 	ruff check src tests
+	ruff format --check src tests
+
+check: lint test
+
+coverage:
+	pytest -q --cov=bixi --cov-report=term-missing
 
 format:
 	ruff format src tests
@@ -34,4 +40,4 @@ api:
 	uvicorn bixi.api.main:app --reload --port 8000
 
 clean:
-	rm -rf .pytest_cache .ruff_cache build dist *.egg-info
+	rm -rf .pytest_cache .ruff_cache .coverage coverage.xml build dist *.egg-info

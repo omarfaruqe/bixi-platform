@@ -58,7 +58,8 @@
     "finding_rebalancing": "**Le rééquilibrage fondé sur les prévisions est rentable.** Les tournées optimisées à partir des prévisions réduisent les heures problématiques de {reduction}, contre {rule} pour la règle empirique d’un répartiteur, en roulant {km} de moins. C’est {share} de ce qu’obtiendrait une connaissance parfaite de la journée.",
     "finding_commute": "**Les navettes créent le déséquilibre.** Les matins de semaine ({window}), le Plateau perd des vélos et le centre-ville se remplit : {station} gagne environ {gain} vélos, soit {ratio} fois ses {capacity} points d’ancrage.",
     "explore_title": "Explorer",
-    "missing_results": "Certains résultats ne sont pas encore disponibles; quelques chiffres manquent."
+    "missing_results": "Certains résultats ne sont pas encore disponibles; quelques chiffres manquent.",
+    "service_no_run": "Service de prévision en ligne · aucune prévision publiée"
   },
   "methodology": {
     "assumptions_title": "Hypothèses et limites",
@@ -121,7 +122,8 @@
   "errors": {
     "data_not_found": "Fichier de données introuvable : {path}. Exécutez d’abord le pipeline d’ingestion.",
     "generic": "Une erreur est survenue. Veuillez réessayer.",
-    "api_unavailable": "Le service de prévisions est indisponible."
+    "api_unavailable": "Le service de prévisions est indisponible.",
+    "no_forecast_run": "Le service de prévision fonctionne, mais aucune prévision n’a encore été publiée. Chargez une série avec : python -m bixi.forecast publish <fichier>."
   },
   "common": {
     "caveat": "Mise en garde importante",
