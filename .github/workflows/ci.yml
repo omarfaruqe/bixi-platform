@@ -59,9 +59,17 @@ jobs:
           docker compose -p bixi-ci -f deploy/docker-compose.yml exec -T api python -m bixi.forecast runs
       - name: Logs on failure
         if: failure()
+        # Also written as annotations, so the cause is visible on the run page and through the API.
         run: |
-          docker compose -p bixi-ci -f deploy/docker-compose.yml ps -a
-          docker compose -p bixi-ci -f deploy/docker-compose.yml logs --tail 100
+          compose="docker compose -p bixi-ci -f deploy/docker-compose.yml"
+          $compose ps -a
+          for c in bixi-db bixi-api bixi-app; do
+            health=$(docker inspect --format '{{.State.Status}} {{json .State.Health}}' "$c" 2>&1 | tail -c 1500)
+            logs=$(docker logs --tail 25 "$c" 2>&1 | tail -c 2500)
+            echo "== $c: $health"; echo "$logs"
+            body=$(printf '%s\n%s' "$health" "$logs" | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::error title=$c::$body"
+          done
       - name: Stop
         if: always()
         run: docker compose -p bixi-ci -f deploy/docker-compose.yml down -v
