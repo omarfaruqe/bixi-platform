@@ -2,6 +2,7 @@
 
 [![Live demo](https://img.shields.io/badge/live_demo-103.99.176.180%2Fbixi-2a78d6)](http://103.99.176.180/bixi/)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)
@@ -188,3 +189,8 @@ fetch it from the sources. Code, database columns, and API fields are in English
 Possible next steps: forecast the 2026 season once BIXI publishes its trips
 (`python -m bixi.forecast export-model`), calibrate intervals by volume band, and add more stations
 outside the urban core.
+
+## License
+The code is released under the [MIT License](LICENSE). The data is not part of this repository
+and keeps its providers' terms: [BIXI Montréal open data](https://bixi.com/en/open-data/) and
+[Open-Meteo](https://open-meteo.com/) (CC BY 4.0, attribution required).

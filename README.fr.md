@@ -2,6 +2,7 @@
 
 [![Démo en ligne](https://img.shields.io/badge/d%C3%A9mo-103.99.176.180%2Fbixi-2a78d6)](http://103.99.176.180/bixi/?lang=fr)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
+[![Licence : MIT](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)
@@ -181,3 +182,9 @@ données et les champs de l’API sont en anglais.
 Suites possibles : prévoir la saison 2026 dès que BIXI publiera ses déplacements
 (`python -m bixi.forecast export-model`), calibrer les intervalles par niveau d’achalandage et
 ajouter des stations hors du centre.
+
+## Licence
+Le code est publié sous la [licence MIT](LICENSE). Les données ne font pas partie de ce dépôt et
+restent soumises aux conditions de leurs fournisseurs : [données ouvertes de BIXI
+Montréal](https://bixi.com/fr/donnees-ouvertes/) et [Open-Meteo](https://open-meteo.com/)
+(CC BY 4.0, attribution requise).
