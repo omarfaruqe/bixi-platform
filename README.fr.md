@@ -16,8 +16,9 @@ chaque station, et où faut-il redistribuer les vélos?**
 **Démo en ligne :** <http://103.99.176.180/bixi/?lang=fr> (anglais : <http://103.99.176.180/bixi/>),
 un tableau de bord Streamlit servi avec Docker derrière Caddy.
 
-> **État d’avancement :** étapes 1 à 8 sur 10 terminées. L’étape 9 (tableau de bord bilingue
-> complet) est la prochaine.
+> **État d’avancement :** étapes 1 à 9 sur 10 terminées : les sept pages du tableau de bord
+> sont en ligne en anglais et en français. L’étape 10 (documentation, tests et finition du
+> déploiement) est la prochaine.
 
 ## Principaux résultats
 - **Les prévisions battent les références.** Sur une période de validation de six semaines
@@ -68,7 +69,7 @@ non satisfaite; les résultats du rééquilibrage sont donc des estimations de s
 | 6 | Modèles de référence et évaluation des prévisions | Terminée |
 | 7 | Stockage et diffusion des prévisions avec FastAPI | Terminée |
 | 8 | Simulation de redistribution | Terminée |
-| 9 | Tableau de bord bilingue complet | |
+| 9 | Tableau de bord bilingue complet | Terminée |
 | 10 | Documentation, tests, déploiement | Déployé tôt; finition à venir |
 
 ## Démarrage rapide

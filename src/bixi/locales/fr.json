@@ -4,7 +4,7 @@
     "question": "Combien de départs et d’arrivées faut-il prévoir à chaque station, et où faut-il redistribuer les vélos?",
     "language": "Langue",
     "station_names_note": "Les noms de stations sont affichés dans leur forme originale.",
-    "locale_check": "Aperçu du formatage"
+    "footer": "Données : [données ouvertes de BIXI Montréal](https://bixi.com/fr/donnees-ouvertes/) et météo d’[Open-Meteo](https://open-meteo.com/). [Code source sur GitHub](https://github.com/omarfaruqe/bixi-platform)."
   },
   "nav": {
     "overview": "Vue d’ensemble",
@@ -16,7 +16,6 @@
     "methodology": "Données et méthodologie"
   },
   "pages": {
-    "planned_step": "Prévu à l’étape {step} de la construction.",
     "overview": {
       "description": "Chiffres clés, état des prévisions et principales conclusions pour les stations sélectionnées."
     },
@@ -39,12 +38,64 @@
       "description": "Sources de données, choix des stations, décisions de modélisation, hypothèses et limites."
     }
   },
+  "overview": {
+    "lead": "Prévisions horaires de la demande et scénarios de rééquilibrage par camion pour {stations} stations BIXI du centre de Montréal, à partir des données ouvertes de déplacements {first}–{last}.",
+    "service_online": "Service de prévision en ligne · modèle entraîné jusqu’au {date}",
+    "service_offline": "Service de prévision hors ligne · les autres pages fonctionnent",
+    "kpi_trips": "Départs analysés",
+    "kpi_trips_help": "Déplacements partis des {stations} stations étudiées pendant les saisons {first}–{last} (du 15 avril au 15 novembre).",
+    "kpi_mae": "Erreur de prévision",
+    "kpi_mae_help": "Erreur absolue moyenne, en départs par station-heure, des prévisions faites la veille sur une période de validation de six semaines (automne 2025) jamais utilisée pour l’entraînement ni le réglage. La flèche la compare à la référence « même heure la semaine précédente ».",
+    "vs_naive": "vs semaine passée",
+    "kpi_coverage": "Couverture à 80 %",
+    "kpi_coverage_help": "Part des heures de validation où le nombre réel se trouvait dans l’intervalle de prévision à 80 %. La cible est de 80 %.",
+    "kpi_rebalancing": "Heures critiques évitées",
+    "kpi_rebalancing_help": "Réduction des station-heures sans vélo ou sans point d’ancrage libre, avec des tournées optimisées à partir des prévisions, par rapport à l’absence de rééquilibrage. 2 camions, stations à moitié pleines à minuit, moyenne sur {days} jours.",
+    "findings_title": "Principaux constats",
+    "finding_forecast": "**Les prévisions battent les références.** Sur la période de validation, l’erreur moyenne du modèle est de {mae} départs par station-heure : {skill_naive} de moins que « même heure la semaine précédente » et {skill_best} de moins que la meilleure référence simple.",
+    "finding_weather": "**Les prévisions météo comptent.** Ajouter la prévision météo de la veille réduit l’erreur de {gain}. Connaître la météo réelle n’apporterait que peu de plus : les prévisions captent l’essentiel de la valeur de la météo.",
+    "finding_intervals": "**Une incertitude honnête.** Les intervalles de prévision à 80 % contiennent le nombre réel {coverage} du temps.",
+    "finding_rebalancing": "**Le rééquilibrage fondé sur les prévisions est rentable.** Les tournées optimisées à partir des prévisions réduisent les heures problématiques de {reduction}, contre {rule} pour la règle empirique d’un répartiteur, en roulant {km} de moins. C’est {share} de ce qu’obtiendrait une connaissance parfaite de la journée.",
+    "finding_commute": "**Les navettes créent le déséquilibre.** Les matins de semaine ({window}), le Plateau perd des vélos et le centre-ville se remplit : {station} gagne environ {gain} vélos, soit {ratio} fois ses {capacity} points d’ancrage.",
+    "explore_title": "Explorer",
+    "missing_results": "Certains résultats ne sont pas encore disponibles; quelques chiffres manquent."
+  },
   "methodology": {
     "assumptions_title": "Hypothèses et limites",
     "assumption_1": "Les déplacements observés ne correspondent pas à la demande réelle : lorsqu’une station est vide ou pleine, la demande non satisfaite n’est jamais enregistrée.",
     "assumption_2": "Les périodes hors de la saison d’exploitation sont exclues de la modélisation.",
     "assumption_3": "Les résultats du rééquilibrage dépendent d’hypothèses sur l’inventaire initial et la capacité des stations; ce sont des estimations de scénarios, et non des résultats mesurés.",
-    "assumption_4": "Les prévisions à 24 heures n’utilisent que l’information disponible au moment de la prédiction (prévisions météo, et non météo observée)."
+    "assumption_4": "Les prévisions à 24 heures n’utilisent que l’information disponible au moment de la prédiction (prévisions météo, et non météo observée).",
+    "pipeline_title": "Comment les éléments s’articulent",
+    "node_trips": "Déplacements BIXI\n2023–2025",
+    "node_stations": "Flux des stations\nen direct (GBFS)",
+    "node_weather": "Prévisions météo\n(Open-Meteo)",
+    "node_events": "Jours fériés\net festivals",
+    "node_hourly": "Table horaire\npar station",
+    "node_features": "Variables sans\nfuite d’information",
+    "node_models": "LightGBM\net références",
+    "node_store": "Entrepôt de prévisions\n(PostgreSQL)",
+    "node_api": "API de prévision\n(FastAPI)",
+    "node_rebalancing": "Simulation de\nrééquilibrage (OR-Tools)",
+    "node_dashboard": "Ce tableau de bord\n(Streamlit)",
+    "data_title": "Sources de données",
+    "data_body": "- **Déplacements :** données ouvertes de BIXI Montréal, de 2023 à 2025, une ligne par déplacement avec les heures de départ et d’arrivée (UTC) et le nom des stations.\n- **Stations :** le flux en direct de BIXI (GBFS) fournit un identifiant stable, l’emplacement et le nombre de points d’ancrage de chaque station.\n- **Météo :** Open-Meteo. Prévisions de la veille archivées par l’API Previous Runs pour le modèle, et météo observée (ERA5) uniquement pour mesurer l’apport d’une connaissance parfaite de la météo.\n- **Calendrier :** jours fériés du Québec et dates de quatre grands festivals (Jazz, Francos, Grand Prix, Osheaga), chacune vérifiée auprès d’une source publiée.",
+    "stations_title": "Choix des stations",
+    "stations_body": "Les fichiers de déplacements n’ont pas d’identifiant de station et les noms changent d’une année à l’autre; chaque nom historique est donc relié à la station en service la plus proche, à moins de 50 m. L’étude porte sur **50 stations** dans une même zone de 3 km (centre-ville, Vieux-Montréal, Plateau, universités). Chacune compte au moins 2 000 déplacements chaque année de 2023 à 2025 et aucune année sous la moitié de sa meilleure. Un tiers provient de chaque niveau d’achalandage, avec une bonne répartition sur la carte. Une zone compacte garde des tournées de camion réalistes, mais les résultats ne décrivent pas les arrondissements périphériques.",
+    "cleaning_title": "Règles de nettoyage",
+    "cleaning_body": "- Les heures sont comptées en UTC puis converties à l’heure de Montréal pour le calendrier, ce qui garde séparée l’heure répétée de novembre.\n- Seule la saison d’exploitation est modélisée : du 15 avril au 15 novembre.\n- Les réancrages (même station, moins de 60 secondes) sont retirés.\n- Les déplacements de plus de 24 heures gardent leur départ, mais pas leur arrivée.\n- Les heures sans déplacement sont conservées à zéro : la table horaire est une grille complète de 770 550 station-heures.",
+    "features_title": "Variables et règle anti-fuite",
+    "features_body": "Une prévision est émise la veille : chaque donnée d’entrée pour une heure doit donc être connue au moins 24 heures plus tôt.\n- **Historique de la demande :** la même heure 1, 2, 7 et 14 jours plus tôt, la moyenne de la même heure sur quatre semaines et l’activité de l’ensemble du réseau.\n- **Calendrier et station :** heure, jour de la semaine, jour férié, mois, points d’ancrage, emplacement et type de station.\n- **Météo :** la prévision émise la veille, jamais la météo réellement observée.\n- **Événements :** présence d’un festival et distance jusqu’à son site.",
+    "models_title": "Modèles et évaluation",
+    "models_body": "- **Références :** même heure la semaine précédente, moyenne de la même heure sur 4 semaines, et niveau habituel selon la station, l’heure et le type de jour.\n- **Modèle principal :** LightGBM avec un objectif de Poisson, adapté aux comptages. L’erreur quadratique, Tweedie, l’absence de météo et des années supplémentaires ont été testés comme solutions de rechange.\n- **Validation :** quatre tests mensuels en 2025, toujours entraînés sur le passé seulement, puis une période de validation finale du 1er octobre au 14 novembre 2025, évaluée une seule fois.\n- **Intervalles :** modèles des 10e et 90e centiles, élargis par un étalonnage conforme pour que les intervalles à 80 % contiennent environ 80 % des valeurs réelles.",
+    "serving_title": "Diffusion des prévisions",
+    "serving_body": "Les prévisions sont stockées dans PostgreSQL et servies par une API FastAPI en lecture seule, seul moyen pour le tableau de bord de les lire. BIXI publie les déplacements après la saison : il n’existe donc pas de demande récente pour prévoir en temps réel. Le service rejoue plutôt la période de validation : de vraies prévisions faites la veille par le modèle entraîné jusqu’au 30 septembre 2025, affichées à côté de ce qui s’est réellement produit.",
+    "rebalancing_title": "Simulation du rééquilibrage",
+    "rebalancing_body": "Le nombre de vélos de chaque station est simulé heure par heure, dans la limite de ses points d’ancrage. Les camions travaillent dans deux fenêtres, de 5 h à 7 h et de 13 h à 15 h; les plans sont établis à partir des **prévisions**, mais évalués avec les flux **réellement** observés. Quatre stratégies sont comparées : aucun rééquilibrage, la règle empirique d’un répartiteur, des tournées optimisées avec OR-Tools (capacité des camions et limites de temps) et le même optimiseur avec une connaissance parfaite de la journée, comme borne supérieure. L’inventaire initial et le nombre de camions varient dans une grille de sensibilité.",
+    "assumption_5": "Les 50 stations sont toutes au centre de la ville; les résultats ne décrivent pas les arrondissements périphériques.",
+    "assumption_6": "La couverture des intervalles varie selon l’achalandage : environ 89 % aux heures calmes et 75 % aux heures les plus chargées.",
+    "reproduce_title": "Reproduire les résultats",
+    "reproduce_body": "Chaque chiffre de ce site provient des commandes ci-dessous, exécutées dans l’ordre. Le journal complet des décisions se trouve dans le dépôt (docs/decisions.md)."
   },
   "filters": {
     "station": "Station",

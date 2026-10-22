@@ -8,16 +8,15 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class PageSpec:
     key: str  # used for URL path and translation keys: nav.<key>, pages.<key>.description
-    icon: str
-    planned_step: int  # build step in which the page gets its real content
+    icon: str  # Material Symbols name, shown in the sidebar and on the Overview page
 
 
 PAGES: tuple[PageSpec, ...] = (
-    PageSpec("overview", "🏠", 9),
-    PageSpec("trip_analysis", "📊", 4),
-    PageSpec("station_map", "🗺️", 4),
-    PageSpec("forecasts", "🔮", 7),
-    PageSpec("rebalancing", "🚚", 8),
-    PageSpec("model_performance", "🎯", 6),
-    PageSpec("methodology", "📚", 10),
+    PageSpec("overview", ":material/home:"),
+    PageSpec("trip_analysis", ":material/bar_chart:"),
+    PageSpec("station_map", ":material/map:"),
+    PageSpec("forecasts", ":material/show_chart:"),
+    PageSpec("rebalancing", ":material/local_shipping:"),
+    PageSpec("model_performance", ":material/query_stats:"),
+    PageSpec("methodology", ":material/menu_book:"),
 )

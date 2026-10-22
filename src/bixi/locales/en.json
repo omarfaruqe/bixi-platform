@@ -4,7 +4,7 @@
     "question": "How many departures and arrivals should we expect at each station, and where should bicycles be redistributed?",
     "language": "Language",
     "station_names_note": "Station names are shown in their original form.",
-    "locale_check": "Formatting preview"
+    "footer": "Data: [BIXI Montréal open data](https://bixi.com/en/open-data/) and [Open-Meteo](https://open-meteo.com/) weather. [Source code on GitHub](https://github.com/omarfaruqe/bixi-platform)."
   },
   "nav": {
     "overview": "Overview",
@@ -16,7 +16,6 @@
     "methodology": "Data and methodology"
   },
   "pages": {
-    "planned_step": "Planned for step {step} of the build.",
     "overview": {
       "description": "Headline numbers, forecast status, and key findings for the selected stations."
     },
@@ -39,12 +38,64 @@
       "description": "Data sources, station selection, modelling choices, assumptions, and limitations."
     }
   },
+  "overview": {
+    "lead": "Hourly demand forecasts and truck rebalancing scenarios for {stations} BIXI stations in central Montréal, built from the {first}–{last} open trip data.",
+    "service_online": "Forecast service online · model trained through {date}",
+    "service_offline": "Forecast service offline · the other pages still work",
+    "kpi_trips": "Departures analysed",
+    "kpi_trips_help": "Trips leaving the {stations} study stations during the {first}–{last} seasons (April 15 to November 15).",
+    "kpi_mae": "Forecast error",
+    "kpi_mae_help": "Mean absolute error, in departures per station-hour, of the day-ahead forecasts on a six-week holdout (autumn 2025) never used for training or tuning. The arrow compares it with the same-hour-last-week baseline.",
+    "vs_naive": "vs last week",
+    "kpi_coverage": "Interval coverage",
+    "kpi_coverage_help": "Share of holdout hours in which the actual count fell inside the 80% prediction interval. The target is 80%.",
+    "kpi_rebalancing": "Problem hours avoided",
+    "kpi_rebalancing_help": "Fewer station-hours with no bike or no free dock, using truck routes optimized from the forecasts, compared with no rebalancing. 2 trucks, stations half full at midnight, average over {days} days.",
+    "findings_title": "Key findings",
+    "finding_forecast": "**Forecasts beat the baselines.** On the holdout, the model's average error is {mae} departures per station-hour: {skill_naive} lower than “same hour last week” and {skill_best} lower than the best simple baseline.",
+    "finding_weather": "**Weather forecasts matter.** Adding the day-ahead weather forecast cuts the error by {gain}. Knowing the actual weather would add little more, so the forecasts capture most of the value of weather.",
+    "finding_intervals": "**Honest uncertainty.** The 80% prediction intervals contain the actual count {coverage} of the time.",
+    "finding_rebalancing": "**Forecast-based rebalancing pays off.** Truck routes optimized from the forecasts cut problem hours by {reduction}, against {rule} for a dispatcher's rule of thumb, while driving {km} less. That is {share} of what perfect foresight would achieve.",
+    "finding_commute": "**Commuting drives the imbalance.** On weekday mornings ({window}) the Plateau loses bikes and downtown fills up: {station} gains about {gain} bikes, {ratio} times its {capacity} docks.",
+    "explore_title": "Explore",
+    "missing_results": "Some results are not available yet, so a few numbers are missing."
+  },
   "methodology": {
     "assumptions_title": "Assumptions and limitations",
     "assumption_1": "Observed trips are not the same as true demand: when a station is empty or full, unmet demand is never recorded.",
     "assumption_2": "Periods outside the operating season are excluded from modelling.",
     "assumption_3": "Rebalancing results depend on assumed starting inventory and station capacity; they are scenario estimates, not measured outcomes.",
-    "assumption_4": "24-hour forecasts use only information available at prediction time (weather forecasts, not observed weather)."
+    "assumption_4": "24-hour forecasts use only information available at prediction time (weather forecasts, not observed weather).",
+    "pipeline_title": "How the pieces fit together",
+    "node_trips": "BIXI trips\n2023–2025",
+    "node_stations": "Live station feed\n(GBFS)",
+    "node_weather": "Weather forecasts\n(Open-Meteo)",
+    "node_events": "Holidays and\nfestivals",
+    "node_hourly": "Hourly station\ntable",
+    "node_features": "Leakage-safe\nfeatures",
+    "node_models": "LightGBM\nand baselines",
+    "node_store": "Forecast store\n(PostgreSQL)",
+    "node_api": "Forecast API\n(FastAPI)",
+    "node_rebalancing": "Rebalancing\nsimulation (OR-Tools)",
+    "node_dashboard": "This dashboard\n(Streamlit)",
+    "data_title": "Data sources",
+    "data_body": "- **Trips:** BIXI Montréal open data, 2023 to 2025, one row per trip with start and end times (UTC) and station names.\n- **Stations:** BIXI's live station feed (GBFS) gives a stable id, location and dock count for each station.\n- **Weather:** Open-Meteo. Day-ahead forecasts archived by the Previous Runs API for the model, and observed weather (ERA5) only to measure what perfect weather knowledge would add.\n- **Calendar:** Québec statutory holidays, and the dates of four large festivals (Jazz, Francos, Grand Prix, Osheaga), each checked against a published source.",
+    "stations_title": "Station selection",
+    "stations_body": "The trip files have no station id and station names drift between years, so each historical name is linked to the nearest live station within 50 m. The study uses **50 stations** in one 3 km zone (downtown, Old Montréal, the Plateau, the universities). Each had at least 2,000 trips in every year from 2023 to 2025 and no year below half of its busiest one. A third come from each volume tier, spread out on the map. One compact zone keeps truck routing realistic, but the results do not describe outer boroughs.",
+    "cleaning_title": "Cleaning rules",
+    "cleaning_body": "- Hours are counted in UTC and converted to Montréal time for calendar features, so the repeated hour in November stays separate.\n- Only the operating season is modelled: April 15 to November 15.\n- Re-docks (same station, under 60 seconds) are dropped.\n- Trips longer than 24 hours keep their departure but not their arrival.\n- Hours with no trips are kept as zeros: the hourly table is a complete grid of 770,550 station-hours.",
+    "features_title": "Features and the leakage rule",
+    "features_body": "A forecast is issued a day ahead, so every input for a given hour must be known at least 24 hours earlier:\n- **Demand history:** the same hour 1, 2, 7 and 14 days back, the mean of the same hour over four weeks, and network-wide activity.\n- **Calendar and station:** hour, weekday, holiday, month, docks, location and station type.\n- **Weather:** the forecast issued the day before, never the weather that actually happened.\n- **Events:** whether a festival is on, and the distance to its venue.",
+    "models_title": "Models and evaluation",
+    "models_body": "- **Baselines:** same hour last week, the 4-week same-hour average, and the usual level for the station, hour and day type.\n- **Main model:** LightGBM with a Poisson objective, suited to counts. Squared error, Tweedie, no weather and extra years were tested as alternatives.\n- **Validation:** four monthly backtests in 2025, always training on the past only, then one final holdout from October 1 to November 14, 2025, evaluated once.\n- **Intervals:** 10th and 90th percentile models, widened by split conformal calibration so that 80% intervals contain about 80% of actual counts.",
+    "serving_title": "Serving the forecasts",
+    "serving_body": "Forecasts are stored in PostgreSQL and served by a read-only FastAPI service, which is the only way the dashboard reads them. BIXI publishes trips after the season, so there is no recent demand to forecast from in real time. The service therefore replays the holdout: genuine day-ahead forecasts from the model trained through September 30, 2025, shown next to what actually happened.",
+    "rebalancing_title": "Rebalancing simulation",
+    "rebalancing_body": "Each station's bike count is simulated hour by hour within its docks. Trucks work two windows, 5–7 h and 13–15 h, and plans are made from the **forecasts** but scored with the flows that **actually** happened. Four strategies are compared: no rebalancing, a dispatcher's rule of thumb, routes optimized with OR-Tools (truck capacity and time limits), and the same optimizer with perfect knowledge of the day as an upper bound. Starting inventory and the number of trucks are varied in a sensitivity grid.",
+    "assumption_5": "The 50 stations are all in the urban core; results do not describe outer boroughs.",
+    "assumption_6": "Interval coverage varies with volume: about 89% in quiet hours and 75% in the busiest ones.",
+    "reproduce_title": "Reproduce the results",
+    "reproduce_body": "Every number on this site comes from the commands below, run in order. The full decision log is in the repository (docs/decisions.md)."
   },
   "filters": {
     "station": "Station",

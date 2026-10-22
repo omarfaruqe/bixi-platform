@@ -274,3 +274,18 @@ departures and arrivals understates problems at busy stations, and observed trip
 (empty or full stations already suppressed some trips), so problem hours are a lower bound.
 Moves take effect at the end of each window and pickups are not checked against the simulated
 stock at pick-up time.
+
+## 15. Completing the dashboard (Step 9)
+- **Overview.** Every headline number (departures analysed, forecast error and skill, interval
+  coverage, problem hours avoided) and every key finding is computed from the pipeline outputs
+  (`src/bixi/analysis/headlines.py`, Streamlit-free and tested), never typed into the page, so the
+  page cannot drift from the results. A missing result removes only the numbers that depend on it.
+  A badge shows whether the forecast API is reachable.
+- **Data and methodology.** Sources, station selection, cleaning, features and the leakage rule,
+  models and evaluation, serving, the rebalancing design, six assumptions and limitations, and
+  the commands that reproduce every number. A pipeline diagram is drawn with Graphviz in the
+  selected language.
+- **Consistency.** One icon set (Material Symbols) for the sidebar and the page cards; a sidebar
+  footer credits BIXI open data and Open-Meteo and links to the source code; the Step 1
+  placeholder page and its "planned for step N" text are gone. Headline cards use equal columns
+  and short labels so French text does not truncate; details go in the help tooltips.

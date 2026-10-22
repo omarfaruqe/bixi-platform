@@ -71,3 +71,26 @@ def rebalancing_assumptions() -> dict | None:
 
     path = get_settings().processed_dir / "rebalancing" / "assumptions.json"
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+@st.cache_data(max_entries=1, show_spinner=False)
+def _trip_headlines(
+    hourly_path: str, hourly_mtime: float, stations_path: str, stations_mtime: float
+):
+    from bixi.analysis import headlines
+
+    hourly = _read_hourly(hourly_path, hourly_mtime)
+    stations = _read_csv(stations_path, stations_mtime)
+    return headlines.volume(hourly), headlines.commute(hourly, stations)
+
+
+def trip_headlines():
+    """(Volume, Commute) for the Overview page; (None, None) when the trip tables are absent."""
+    settings = get_settings()
+    hourly = settings.processed_dir / "hourly_station.parquet"
+    stations = settings.reference_dir / "selected_stations.csv"
+    if not (hourly.exists() and stations.exists()):
+        return None, None
+    return _trip_headlines(
+        str(hourly), hourly.stat().st_mtime, str(stations), stations.stat().st_mtime
+    )

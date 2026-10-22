@@ -5,9 +5,13 @@ from __future__ import annotations
 import streamlit as st
 
 from bixi.app.registry import PAGES
-from bixi.app.state import get_translator, init_language, render_language_selector
+from bixi.app.state import (
+    get_translator,
+    init_language,
+    register_pages,
+    render_language_selector,
+)
 from bixi.app.views import (
-    make_placeholder,
     render_forecasts,
     render_methodology,
     render_model_performance,
@@ -21,7 +25,7 @@ init_language()
 translator = get_translator()
 st.set_page_config(page_title=translator.t("app.title"), page_icon="🚲", layout="wide")
 
-_CUSTOM_RENDERERS = {
+RENDERERS = {
     "overview": render_overview,
     "trip_analysis": render_trip_analysis,
     "station_map": render_station_map,
@@ -32,23 +36,23 @@ _CUSTOM_RENDERERS = {
 }
 
 
-def _build_pages() -> list[st.Page]:
+def _build_pages() -> dict[str, st.Page]:
     tr = get_translator()
-    pages = []
-    for spec in PAGES:
-        render = _CUSTOM_RENDERERS.get(spec.key) or make_placeholder(spec)
-        pages.append(
-            st.Page(
-                render,
-                title=tr.t(f"nav.{spec.key}"),
-                icon=spec.icon,
-                url_path=spec.key,
-                default=spec.key == "overview",
-            )
+    return {
+        spec.key: st.Page(
+            RENDERERS[spec.key],
+            title=tr.t(f"nav.{spec.key}"),
+            icon=spec.icon,
+            url_path=spec.key,
+            default=spec.key == "overview",
         )
-    return pages
+        for spec in PAGES
+    }
 
 
-navigation = st.navigation(_build_pages())
+pages = _build_pages()
+register_pages(pages)
+navigation = st.navigation(list(pages.values()))
 render_language_selector()
+st.sidebar.caption(translator.t("app.footer"))
 navigation.run()

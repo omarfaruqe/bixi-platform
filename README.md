@@ -16,7 +16,8 @@ bicycles be redistributed?**
 **Live demo:** <http://103.99.176.180/bixi/> (French: <http://103.99.176.180/bixi/?lang=fr>),
 a Streamlit dashboard served with Docker behind Caddy.
 
-> **Status:** Steps 1-8 of 10 complete. Step 9 (completing the bilingual dashboard) is next.
+> **Status:** Steps 1-9 of 10 complete: all seven dashboard pages are live in English and French.
+> Step 10 (final documentation, tests and deployment polish) is next.
 
 ## Findings so far
 - **Forecasts beat the baselines.** On a six-week holdout (October 1 - November 14, 2025, never
@@ -60,7 +61,7 @@ actual stockouts or unmet demand, so rebalancing results are scenario estimates.
 | 6 | Baselines and forecasting model evaluation | Done |
 | 7 | Store and serve forecasts through FastAPI | Done |
 | 8 | Redistribution simulation | Done |
-| 9 | Complete bilingual dashboard | |
+| 9 | Complete bilingual dashboard | Done |
 | 10 | Documentation, tests, deployment | Deployed early; final polish pending |
 
 ## Quick start

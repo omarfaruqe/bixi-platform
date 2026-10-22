@@ -30,3 +30,20 @@ def render_language_selector() -> None:
         horizontal=True,
     )
     st.query_params["lang"] = st.session_state[LANGUAGE_KEY]
+
+
+PAGES_KEY = "_pages"
+
+
+def register_pages(pages: dict) -> None:
+    """Keep this run's page objects so views can link to each other with st.page_link."""
+    st.session_state[PAGES_KEY] = pages
+
+
+def page_link(key: str, label: str, icon: str | None = None) -> None:
+    """A link to another page, or plain bold text when pages are not registered (tests)."""
+    page = st.session_state.get(PAGES_KEY, {}).get(key)
+    if page is None:
+        st.markdown(f"**{label}**")
+    else:
+        st.page_link(page, label=f"**{label}**", icon=icon)
