@@ -182,3 +182,11 @@ def sa_count(table):
     import sqlalchemy as sa
 
     return sa.select(sa.func.count()).select_from(table)
+
+
+def test_fresh_database_is_healthy_before_the_first_publish(tmp_path, monkeypatch):
+    """Regression: on an empty database /health failed (no tables) until a run was published."""
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'fresh.db'}")
+    client = TestClient(create_app())
+    assert client.get("/health").json() == {"status": "ok", "active_run": None}
+    assert client.get("/run").status_code == 503

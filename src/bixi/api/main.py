@@ -107,9 +107,15 @@ class StationsDay(BaseModel):
 
 
 def get_engine(request: Request) -> Engine:
-    """The app's engine; created from DATABASE_URL on first use unless injected (tests)."""
+    """The app's engine; created from DATABASE_URL on first use unless injected (tests).
+
+    The schema is created (if missing) at that point, so a fresh database answers "no run
+    published yet" (/health ok, /run 503) instead of failing until the first publish.
+    """
     if request.app.state.engine is None:
-        request.app.state.engine = store.engine_for(get_settings().database_url)
+        engine = store.engine_for(get_settings().database_url)
+        store.create_schema(engine)  # idempotent: CREATE TABLE IF NOT EXISTS
+        request.app.state.engine = engine
     return request.app.state.engine
 
 
