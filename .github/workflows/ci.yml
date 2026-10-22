@@ -22,8 +22,8 @@ jobs:
     env:
       BIXI_TEST_DATABASE_URL: postgresql+psycopg://bixi:bixi@localhost:5432/bixi_test
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -35,7 +35,7 @@ jobs:
           ruff format --check src tests
       - name: Test
         run: pytest -q --cov=bixi --cov-report=term --cov-report=xml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: coverage
           path: coverage.xml
@@ -44,9 +44,13 @@ jobs:
     # Builds the production image and starts the stack exactly as on the server.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Build and start
-        run: docker compose -p bixi-ci -f deploy/docker-compose.yml up -d --build --wait --wait-timeout 180
+      - uses: actions/checkout@v6
+      - name: Versions
+        run: docker version && docker compose version
+      - name: Build
+        run: docker compose -p bixi-ci -f deploy/docker-compose.yml build
+      - name: Start
+        run: docker compose -p bixi-ci -f deploy/docker-compose.yml up -d --wait --wait-timeout 180
       - name: Smoke test
         run: |
           curl -fsS http://127.0.0.1:8502/health
@@ -55,7 +59,9 @@ jobs:
           docker compose -p bixi-ci -f deploy/docker-compose.yml exec -T api python -m bixi.forecast runs
       - name: Logs on failure
         if: failure()
-        run: docker compose -p bixi-ci -f deploy/docker-compose.yml logs --tail 100
+        run: |
+          docker compose -p bixi-ci -f deploy/docker-compose.yml ps -a
+          docker compose -p bixi-ci -f deploy/docker-compose.yml logs --tail 100
       - name: Stop
         if: always()
         run: docker compose -p bixi-ci -f deploy/docker-compose.yml down -v

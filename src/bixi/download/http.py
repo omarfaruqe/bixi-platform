@@ -38,6 +38,7 @@ class FileInfo:
 #     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
 #     return urllib.request.urlopen(request, timeout=timeout)
 
+
 def _open(url: str, timeout: float):
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     context = ssl.create_default_context(cafile=certifi.where())

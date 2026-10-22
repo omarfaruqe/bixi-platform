@@ -8,6 +8,9 @@
 # From the project root on the server:
 #   docker compose -p bixi -f deploy/docker-compose.yml up -d --build
 # Optional: put BIXI_DB_PASSWORD=<something long> in deploy/.env before the first start.
+#
+# api and app build the same Dockerfile under separate tags, so the two parallel builds never
+# write the same image name. The second build is a cache hit.
 name: bixi
 
 x-logging: &logging
@@ -39,7 +42,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-    image: bixi-platform:latest
+    image: bixi-platform-api:latest
     container_name: bixi-api
     restart: unless-stopped
     command: ["uvicorn", "bixi.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
@@ -65,7 +68,7 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
-    image: bixi-platform:latest
+    image: bixi-platform-app:latest
     container_name: bixi-app
     restart: unless-stopped
     ports:

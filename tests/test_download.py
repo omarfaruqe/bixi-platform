@@ -102,8 +102,16 @@ def test_download_trips_skip_download_without_zip_explains_what_to_do(tmp_path):
 
 
 def test_gbfs_feed_urls_v2_per_language_and_v3_flat():
-    v2 = {"data": {"en": {"feeds": [{"name": "station_information", "url": "u1"},
-                                    {"name": "vehicle_types", "url": "ignored"}]}}}
+    v2 = {
+        "data": {
+            "en": {
+                "feeds": [
+                    {"name": "station_information", "url": "u1"},
+                    {"name": "vehicle_types", "url": "ignored"},
+                ]
+            }
+        }
+    }
     v3 = {"data": {"feeds": [{"name": "station_status", "url": "u2"}]}}
     assert extract_feed_urls(v2) == {"station_information": "u1"}
     assert extract_feed_urls(v3) == {"station_status": "u2"}
