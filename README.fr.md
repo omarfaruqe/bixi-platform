@@ -1,7 +1,7 @@
 # Plateforme de prévision de la demande et de rééquilibrage BIXI
 
 [![Démo en ligne](https://img.shields.io/badge/d%C3%A9mo-103.99.176.180%2Fbixi-2a78d6)](http://103.99.176.180/bixi/?lang=fr)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 [![Licence : MIT](https://img.shields.io/badge/licence-MIT-green)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
@@ -17,7 +17,7 @@ chaque station, et où faut-il redistribuer les vélos?**
 **Démo en ligne :** <http://103.99.176.180/bixi/?lang=fr> (anglais : <http://103.99.176.180/bixi/>),
 un tableau de bord Streamlit et un service de prévision FastAPI, servis avec Docker derrière Caddy.
 
-> **État d’avancement :** version 1.0.0, les dix étapes de construction sont terminées. Voir
+> **État d’avancement :** version 1.1.0; les dix étapes de construction sont terminées, plus un thème visuel. Voir
 > [CHANGELOG.md](CHANGELOG.md) (en anglais).
 
 | Vue d’ensemble | Prévisions de la veille |

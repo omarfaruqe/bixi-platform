@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 - 2026-10-21
+- **Theme.** Self-hosted Inter and JetBrains Mono fonts (no external requests), light and dark
+  variants that follow the viewer's system setting, softer borders and rounding, a sidebar tint,
+  chart colours from the project palette, and an original logo.
+- **Credits.** The footer states that this is an independent project, not affiliated with BIXI.
+- **CI fixes.** The API creates its schema on first connection, so a fresh database is healthy
+  before the first publish; containers report their health and logs as annotations on failure;
+  api and app images get separate tags.
+
 ## 1.0.0 - 2026-10-21
 First complete version, built in ten steps.
 

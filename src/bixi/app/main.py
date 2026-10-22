@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import streamlit as st
 
 from bixi.app.registry import PAGES
@@ -23,7 +25,11 @@ from bixi.app.views import (
 
 init_language()
 translator = get_translator()
-st.set_page_config(page_title=translator.t("app.title"), page_icon="🚲", layout="wide")
+STATIC = Path(__file__).parent / "static"
+st.set_page_config(
+    page_title=translator.t("app.title"), page_icon=str(STATIC / "logo.svg"), layout="wide"
+)
+st.logo(str(STATIC / "logo.svg"), size="large")
 
 RENDERERS = {
     "overview": render_overview,

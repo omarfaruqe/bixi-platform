@@ -1,7 +1,7 @@
 # BIXI Demand Forecasting and Rebalancing Platform
 
 [![Live demo](https://img.shields.io/badge/live_demo-103.99.176.180%2Fbixi-2a78d6)](http://103.99.176.180/bixi/)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
@@ -17,7 +17,7 @@ bicycles be redistributed?**
 **Live demo:** <http://103.99.176.180/bixi/> (French: <http://103.99.176.180/bixi/?lang=fr>),
 a Streamlit dashboard and a FastAPI forecast service, served with Docker behind Caddy.
 
-> **Status:** version 1.0.0, all ten build steps complete. See [CHANGELOG.md](CHANGELOG.md).
+> **Status:** version 1.1.0; all ten build steps are complete, plus a visual theme. See [CHANGELOG.md](CHANGELOG.md).
 
 | Overview | Day-ahead forecasts |
 |---|---|

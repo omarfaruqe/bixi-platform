@@ -1,6 +1,65 @@
-# Theme: accent colour from the chart palette, so red stays reserved for "station loses bikes".
-[theme]
-primaryColor = "#2a78d6"
+# Dashboard theme. Colours come from the chart palette (docs/decisions.md section 10): the accent
+# is the departures blue, so red stays reserved for "station loses bikes". Light and dark variants
+# follow the viewer's system setting; both can be chosen from the app menu (Settings).
+
+[server]
+# Serves src/bixi/app/static/ at app/static/ (self-hosted fonts and the logo; no external requests).
+enableStaticServing = true
 
 [browser]
 gatherUsageStats = false
+
+[theme]
+font = "Inter, system-ui, sans-serif"
+headingFont = "Inter, system-ui, sans-serif"
+codeFont = "JetBrains Mono, ui-monospace, monospace"
+baseFontSize = 15
+headingFontSizes = ["2.25rem", "1.45rem", "1.15rem", "1rem"]
+headingFontWeights = [700, 650, 600, 600]
+metricValueFontSize = "1.9rem"
+metricValueFontWeight = 600
+baseRadius = "0.6rem"
+buttonRadius = "0.6rem"
+showWidgetBorder = true
+showSidebarBorder = true
+chartCategoricalColors = ["#2a78d6", "#eb6834", "#1baf7a", "#898781"]
+chartSequentialColors = ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]
+chartDivergingColors = ["#e34948", "#f0a19a", "#c3c2b7", "#86b6ef", "#2a78d6"]
+
+[[theme.fontFaces]]
+family = "Inter"
+url = "app/static/fonts/inter-latin-variable.woff2"
+weight = "100 900"
+style = "normal"
+
+[[theme.fontFaces]]
+family = "JetBrains Mono"
+url = "app/static/fonts/jetbrains-mono-latin-variable.woff2"
+weight = "100 800"
+style = "normal"
+
+[theme.light]
+primaryColor = "#2a78d6"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f5f8"
+textColor = "#1b2330"
+borderColor = "#dfe4eb"
+linkColor = "#1c5cab"
+codeBackgroundColor = "#f3f5f8"
+
+[theme.light.sidebar]
+backgroundColor = "#f5f7fa"
+secondaryBackgroundColor = "#e9edf3"
+
+[theme.dark]
+primaryColor = "#4f93e6"
+backgroundColor = "#0f141b"
+secondaryBackgroundColor = "#1a212b"
+textColor = "#e6e9ee"
+borderColor = "#2b3440"
+linkColor = "#86b6ef"
+codeBackgroundColor = "#1a212b"
+
+[theme.dark.sidebar]
+backgroundColor = "#131a22"
+secondaryBackgroundColor = "#1e2631"

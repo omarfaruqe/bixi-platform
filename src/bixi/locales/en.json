@@ -4,7 +4,7 @@
     "question": "How many departures and arrivals should we expect at each station, and where should bicycles be redistributed?",
     "language": "Language",
     "station_names_note": "Station names are shown in their original form.",
-    "footer": "Data: [BIXI Montréal open data](https://bixi.com/en/open-data/) and [Open-Meteo](https://open-meteo.com/) weather. [Source code on GitHub](https://github.com/omarfaruqe/bixi-platform)."
+    "footer": "Independent project, not affiliated with BIXI Montréal. Data: [BIXI Montréal open data](https://bixi.com/en/open-data/) and [Open-Meteo](https://open-meteo.com/) weather. [Source code on GitHub](https://github.com/omarfaruqe/bixi-platform)."
   },
   "nav": {
     "overview": "Overview",

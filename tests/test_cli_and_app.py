@@ -105,3 +105,20 @@ def test_full_app_navigation_and_footer(data_env, monkeypatch):  # noqa: F811
     assert not app.exception, app.exception
     assert app.title[0].value == "Prévision de la demande et rééquilibrage BIXI"
     assert app.query_params["lang"] in ("fr", ["fr"])
+
+
+def test_theme_assets_exist():
+    """Every font and image the theme points at is shipped with the app (no external requests)."""
+    import tomllib
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    config = tomllib.loads((root / ".streamlit" / "config.toml").read_text(encoding="utf-8"))
+    assert config["server"]["enableStaticServing"] is True
+    static = root / "src" / "bixi" / "app" / "static"
+    for face in config["theme"]["fontFaces"]:
+        assert face["url"].startswith("app/static/")
+        assert (static / face["url"].removeprefix("app/static/")).is_file(), face["url"]
+    assert (static / "logo.svg").is_file()
+    for scheme in ("light", "dark"):
+        assert config["theme"][scheme]["primaryColor"].startswith("#")

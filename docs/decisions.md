@@ -308,3 +308,13 @@ stock at pick-up time.
   The deployment guide gained a troubleshooting table built from the problems met while deploying.
 - **Documentation.** README in English and French with architecture diagram, screenshots, test
   inventory and full reproduction commands; a changelog; version 1.0.0.
+
+## 17. Visual theme (v1.1.0)
+Tailwind was considered and rejected for the Streamlit app: Streamlit renders its own components,
+so utility classes have no markup to attach to, and CSS aimed at Streamlit's internal class names
+breaks between releases. The theme uses Streamlit's own configuration instead
+(`.streamlit/config.toml`): Inter and JetBrains Mono served from `src/bixi/app/static/` (no
+third-party font requests; both under the SIL Open Font License), light and dark palettes built on
+the chart colours, chart colour sequences set to the same palette, and an original logo. A test
+checks that every asset the theme references exists. A Tailwind frontend would be a separate app on
+top of the FastAPI service.

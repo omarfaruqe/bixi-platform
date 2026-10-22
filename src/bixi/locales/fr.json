@@ -4,7 +4,7 @@
     "question": "Combien de départs et d’arrivées faut-il prévoir à chaque station, et où faut-il redistribuer les vélos?",
     "language": "Langue",
     "station_names_note": "Les noms de stations sont affichés dans leur forme originale.",
-    "footer": "Données : [données ouvertes de BIXI Montréal](https://bixi.com/fr/donnees-ouvertes/) et météo d’[Open-Meteo](https://open-meteo.com/). [Code source sur GitHub](https://github.com/omarfaruqe/bixi-platform)."
+    "footer": "Projet indépendant, sans lien avec BIXI Montréal. Données : [données ouvertes de BIXI Montréal](https://bixi.com/fr/donnees-ouvertes/) et météo d’[Open-Meteo](https://open-meteo.com/). [Code source sur GitHub](https://github.com/omarfaruqe/bixi-platform)."
   },
   "nav": {
     "overview": "Vue d’ensemble",
